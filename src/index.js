@@ -15,7 +15,16 @@ app.get('/hello', (req, res) => {
     res.end();
 });
 
+app.get('/error', (req, res) => {
+    throw new Error('Error message');
+});
+
 app.use('/users', userRouter);
+
+app.use((err, req, res, next) => {
+    console.log(err.message);
+    res.status(500).send(err.message);
+});
 
 app.listen(port, () => {
     console.log(`Started at http://localhost:${port}`);
