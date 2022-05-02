@@ -25,6 +25,7 @@ app.use(
   (err: Error, request: Request, response: Response, next: NextFunction) => {
     console.log(err.message);
     response.status(500).send(err.message);
+    next();
   }
 );
 
