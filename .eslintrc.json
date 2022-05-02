@@ -18,6 +18,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "indent": ["error", 4],
     "prettier/prettier": [
       "error",
       {
@@ -37,7 +38,8 @@
         "semi": true,
         "jsxSingleQuote": true,
         "singleQuote": true,
-        "useTabs": false
+        "useTabs": false,
+        "tabWidth": 4
       }
     ]
   }
