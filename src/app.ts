@@ -1,6 +1,5 @@
 import express, { Express } from 'express';
 import { Server } from 'http';
-import { LoggerService } from './logger';
 import { UserController } from './user';
 import { ExceptionFilter } from './errors';
 import { ILogger } from './logger';
