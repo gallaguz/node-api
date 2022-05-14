@@ -1,11 +1,16 @@
-import { LoggerService } from '../logger';
+import 'reflect-metadata';
+import { ILogger } from '../logger';
 import { Response, Router } from 'express';
 import { IBaseRoute } from './base.route.interface';
+import { injectable } from 'inversify';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+@injectable()
 export abstract class BaseController {
     private readonly _router: Router;
 
-    protected constructor(private logger: LoggerService) {
+    protected constructor(private logger: ILogger) {
         this._router = Router();
     }
 
