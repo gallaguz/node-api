@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import express, { Express } from 'express';
 import { Server } from 'http';
-import { UserController } from './user';
+import { UserController } from './users';
 import { ExceptionFilter } from './errors';
 import { ILogger } from './logger';
 import { inject, injectable } from 'inversify';

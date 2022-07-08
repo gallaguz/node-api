@@ -4,14 +4,15 @@ import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../errors';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
+import { IUserController } from './users.controller.interface';
 
 @injectable()
-export class UserController extends BaseController {
+export class UserController extends BaseController implements IUserController {
     constructor(@inject(TYPES.ILogger) private loggerService: ILogger) {
         super(loggerService);
         this.bindRoutes([
             { path: '/login', func: this.login, method: 'post' },
-            { path: '/registration', func: this.registration, method: 'post' },
+            { path: '/register', func: this.register, method: 'post' },
         ]);
     }
 
@@ -20,7 +21,7 @@ export class UserController extends BaseController {
         next(new HttpError(401, 'Auth error', 'login'));
     }
 
-    registration(req: Request, res: Response, next: NextFunction) {
-        this.ok(res, 'registration');
+    register(req: Request, res: Response, next: NextFunction) {
+        this.ok(res, 'register');
     }
 }
