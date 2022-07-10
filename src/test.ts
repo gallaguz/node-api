@@ -18,7 +18,7 @@ const Method = (
     // eslint-disable-next-line @typescript-eslint/ban-types
     target: Object,
     propertyKey: string,
-    propertyDescriptor: PropertyDescriptor
+    propertyDescriptor: PropertyDescriptor,
 ) => {
     console.log(propertyKey);
     const oldVal = propertyDescriptor.value;

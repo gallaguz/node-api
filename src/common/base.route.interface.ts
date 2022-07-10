@@ -8,3 +8,5 @@ export interface IBaseRoute {
         'get' | 'post' | 'delete' | 'patch' | 'put' | 'options'
     >;
 }
+
+export type ExpressReturnType = Response<any, Record<string, any>>;

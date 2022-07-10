@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { ILogger } from '../logger';
 import { Response, Router } from 'express';
-import { IBaseRoute } from './base.route.interface';
+import { ExpressReturnType, IBaseRoute } from './base.route.interface';
 import { injectable } from 'inversify';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -14,24 +14,24 @@ export abstract class BaseController {
         this._router = Router();
     }
 
-    get router() {
+    get router(): Router {
         return this._router;
     }
 
-    public send<T>(res: Response, code: number, message: T) {
+    public send<T>(res: Response, code: number, message: T): ExpressReturnType {
         res.type('application/json');
         return res.status(code).json(message);
     }
 
-    public ok<T>(res: Response, message: T) {
+    public ok<T>(res: Response, message: T): ExpressReturnType {
         return this.send<T>(res, 200, message);
     }
 
-    public created(res: Response) {
+    public created(res: Response): ExpressReturnType {
         return res.sendStatus(201);
     }
 
-    protected bindRoutes(routes: IBaseRoute[]) {
+    protected bindRoutes(routes: IBaseRoute[]): void {
         for (const route of routes) {
             this.logger.log(`[${route.method}] ${route.path}`);
 
