@@ -7,7 +7,7 @@
         "lint": "eslint ./src/**",
         "lint:fix": "eslint ./src/** --fix",
         "build": "tsc",
-        "dev": "nodemon --exec ts-node src/main.ts"
+        "dev": "nodemon"
     },
     "keywords": [],
     "author": "",
