@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import express, { Express } from 'express';
 import { Server } from 'http';
-import { UserController } from './users';
+import { UsersController } from './users';
 import { ExceptionFilter } from './errors';
 import { ILogger } from './logger';
 import { inject, injectable } from 'inversify';
@@ -16,7 +16,7 @@ export class App {
 
     constructor(
         @inject(TYPES.ILogger) private logger: ILogger,
-        @inject(TYPES.UserController) private userController: UserController,
+        @inject(TYPES.UsersController) private userController: UsersController,
         @inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilter,
     ) {
         this.app = express();

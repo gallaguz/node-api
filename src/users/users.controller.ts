@@ -7,10 +7,15 @@ import { TYPES } from '../types';
 import { IUserController } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
+import { User } from './user.entity';
+import { UsersService } from './users.service';
 
 @injectable()
-export class UserController extends BaseController implements IUserController {
-    constructor(@inject(TYPES.ILogger) private loggerService: ILogger) {
+export class UsersController extends BaseController implements IUserController {
+    constructor(
+        @inject(TYPES.ILogger) private loggerService: ILogger,
+        @inject(TYPES.UsersService) private usersService: UsersService,
+    ) {
         super(loggerService);
         this.bindRoutes([
             { path: '/login', func: this.login, method: 'post' },
@@ -27,12 +32,13 @@ export class UserController extends BaseController implements IUserController {
         next(new HttpError(401, 'Auth error', 'login'));
     }
 
-    register(
-        req: Request<{}, {}, UserRegisterDto>,
+    async register(
+        { body }: Request<{}, {}, UserRegisterDto>,
         res: Response,
         next: NextFunction,
-    ): void {
-        console.log(req.body);
-        this.ok(res, 'register');
+    ): Promise<void> {
+        const user = await this.usersService.createUser(body);
+        if (!user) return next(new HttpError(422, 'User exist'));
+        this.ok(res, { email: user.email });
     }
 }
