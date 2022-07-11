@@ -7,7 +7,6 @@ import { TYPES } from '../types';
 import { IUserController } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
-import { User } from './user.entity';
 import { UsersService } from './users.service';
 
 @injectable()
@@ -19,7 +18,12 @@ export class UsersController extends BaseController implements IUserController {
         super(loggerService);
         this.bindRoutes([
             { path: '/login', func: this.login, method: 'post' },
-            { path: '/register', func: this.register, method: 'post' },
+            {
+                path: '/register',
+                func: this.register,
+                method: 'post',
+                middlewares: [],
+            },
         ]);
     }
 

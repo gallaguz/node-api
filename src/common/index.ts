@@ -1,2 +1,2 @@
 export * from './base.controller';
-export * from './base.route.interface';
+export * from './route.interface';

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { ILogger } from '../logger';
 import { Response, Router } from 'express';
-import { ExpressReturnType, IBaseRoute } from './base.route.interface';
+import { ExpressReturnType, IControllerRoute } from './route.interface';
 import { injectable } from 'inversify';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -31,11 +31,14 @@ export abstract class BaseController {
         return res.sendStatus(201);
     }
 
-    protected bindRoutes(routes: IBaseRoute[]): void {
+    protected bindRoutes(routes: IControllerRoute[]): void {
         for (const route of routes) {
             this.logger.log(`[${route.method}] ${route.path}`);
 
-            this.router[route.method](route.path, route.func.bind(this));
+            const middleware = route.middlewares?.map((m) => m.execute.bind(m));
+            const handler = route.func.bind(this);
+            const pipeline = middleware ? [...middleware, handler] : handler;
+            this.router[route.method](route.path, pipeline);
         }
     }
 }
