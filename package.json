@@ -7,7 +7,9 @@
         "lint": "eslint ./src/**",
         "lint:fix": "eslint ./src/** --fix",
         "build": "tsc",
-        "dev": "nodemon"
+        "dev": "nodemon",
+        "dev:inspect": "nodemon -e ts,json --exec node --inspect=localhost:9222 -r ts-node/register src/main.ts",
+        "debug": "nodemon --exec node --inspect-brk=0.0.0.0:9229 --require ts-node/register src/main.ts"
     },
     "keywords": [],
     "author": "",
