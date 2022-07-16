@@ -33,7 +33,7 @@
                 "max-len": [
                     "error",
                     {
-                        "code": 80,
+                        "code": 100,
                         "ignoreTrailingComments": true,
                         "ignoreComments": true,
                         "ignoreUrls": true,
@@ -43,7 +43,7 @@
                     }
                 ],
                 "linebreak-style": ["error", "unix"],
-                "printWidth": 80,
+                "printWidth": 100,
                 "trailingComma": "all",
                 "semi": true,
                 "jsxSingleQuote": true,
