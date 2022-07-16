@@ -5,4 +5,5 @@ export const TYPES = {
     UsersService: Symbol.for('UsersService'),
     ConfigService: Symbol.for('ConfigService'),
     ExceptionFilter: Symbol.for('ExceptionFilter'),
+    PrismaService: Symbol.for('PrismaService'),
 };
