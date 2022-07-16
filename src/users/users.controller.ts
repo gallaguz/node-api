@@ -28,11 +28,7 @@ export class UsersController extends BaseController implements IUserController {
         ]);
     }
 
-    login(
-        req: Request<{}, {}, UserLoginDto>,
-        res: Response,
-        next: NextFunction,
-    ): void {
+    login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {
         console.log(req.body);
         next(new HttpError(401, 'Auth error', 'login'));
     }
@@ -42,8 +38,8 @@ export class UsersController extends BaseController implements IUserController {
         res: Response,
         next: NextFunction,
     ): Promise<void> {
-        const user = await this.usersService.createUser(body);
-        if (!user) return next(new HttpError(422, 'User exist'));
-        this.ok(res, { email: user.email });
+        const result = await this.usersService.createUser(body);
+        if (!result) return next(new HttpError(422, 'User exist'));
+        this.ok(res, { email: result.email, id: result.id });
     }
 }
