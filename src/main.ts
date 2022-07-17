@@ -1,18 +1,18 @@
 import 'reflect-metadata';
 import { App } from './app';
 import { ILogger, LoggerService } from './logger';
-import { UsersController } from './users';
+import { UserController } from './users';
 import { ExceptionFilter, IExceptionFilter } from './errors';
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { TYPES } from './types';
 import { IUserController } from './users/users.controller.interface';
-import { IUsersService } from './users/users.service.interface';
-import { UsersService } from './users/users.service';
+import { IUserService } from './users/users.service.interface';
+import { UserService } from './users/userService';
 import { IConfigService } from './config/config.service.interface';
 import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
-import { UsersRepository } from './users/users.repository';
-import { IUsersRepository } from './users/users.repository.interface';
+import { UserRepository } from './users/userRepository';
+import { IUserRepository } from './users/users.repository.interface';
 
 export interface IBootstrapReturn {
     appContainer: Container;
@@ -22,11 +22,11 @@ export interface IBootstrapReturn {
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
     bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
     bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
-    bind<IUserController>(TYPES.UsersController).to(UsersController);
-    bind<IUsersService>(TYPES.UsersService).to(UsersService);
+    bind<IUserController>(TYPES.UserController).to(UserController);
+    bind<IUserService>(TYPES.UserService).to(UserService);
     bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
     bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
-    bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
+    bind<IUserRepository>(TYPES.UserRepository).to(UserRepository).inSingletonScope();
     bind<App>(TYPES.Application).to(App);
 });
 
