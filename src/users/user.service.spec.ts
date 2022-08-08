@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 import { IConfigService } from '../config/config.service.interface';
-import { IUserRepository } from './users.repository.interface';
-import { IUserService } from './users.service.interface';
+import { IUserRepository } from './user.repository.interface';
+import { IUserService } from './user.service.interface';
 import { TYPES } from '../types';
-import { UserService } from './userService';
+import { UserService } from './user.service';
 import { User } from './user.entity';
 import { UserModel } from '@prisma/client';
 

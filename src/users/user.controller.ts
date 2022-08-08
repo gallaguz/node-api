@@ -1,16 +1,16 @@
 import { BaseController } from '../common';
-import { ILogger, LoggerService } from '../logger';
+import { ILogger } from '../logger';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../errors';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
-import { IUserController } from './users.controller.interface';
+import { IUserController } from './user.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { ValidateMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { IConfigService } from '../config/config.service.interface';
-import { IUserService } from './users.service.interface';
+import { IUserService } from './user.service.interface';
 import { AuthGuard } from '../common/auth.guard';
 
 @injectable()

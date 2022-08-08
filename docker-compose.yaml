@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+#docker exec -ti 8fab6bcfee2e psql -U user -W node_api
+  node_api_postgres:
+    image: postgres:13.3-alpine
+    container_name: node_api_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'node_api'
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    expose:
+      - '5432'
+    volumes:
+      - ./db/postgres/db_files:/var/lib/postgresql/data

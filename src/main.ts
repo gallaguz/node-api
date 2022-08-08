@@ -5,14 +5,14 @@ import { UserController } from './users';
 import { ExceptionFilter, IExceptionFilter } from './errors';
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { TYPES } from './types';
-import { IUserController } from './users/users.controller.interface';
-import { IUserService } from './users/users.service.interface';
-import { UserService } from './users/userService';
+import { IUserController } from './users/user.controller.interface';
+import { IUserService } from './users/user.service.interface';
+import { UserService } from './users/user.service';
 import { IConfigService } from './config/config.service.interface';
 import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
-import { UserRepository } from './users/userRepository';
-import { IUserRepository } from './users/users.repository.interface';
+import { UserRepository } from './users/user.repository';
+import { IUserRepository } from './users/user.repository.interface';
 
 export interface IBootstrapReturn {
     appContainer: Container;
