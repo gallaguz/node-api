@@ -10,10 +10,10 @@ export class AuthMiddleware implements IMiddleware {
         if (req.headers.authorization) {
             const token = req.headers.authorization.split(' ')[1];
 
-            verify(token, this.secret, (err, decoded) => {
+            verify(token, this.secret, (err, payload) => {
                 if (err) next();
-                else if (decoded) {
-                    const { email } = decoded as TokenDto;
+                else if (payload) {
+                    const { email } = payload as TokenDto;
                     if (email) {
                         req.user = email;
                         next();

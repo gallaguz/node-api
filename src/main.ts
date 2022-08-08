@@ -1,3 +1,5 @@
+if (!process.env.IS_TS_NODE) require('module-alias/register');
+
 import 'reflect-metadata';
 import { App } from './app';
 import { ILogger, LoggerService } from './logger';
