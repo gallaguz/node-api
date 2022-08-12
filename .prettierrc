@@ -1,6 +1,6 @@
 {
     "linebreak-style": ["error", "unix"],
-    "printWidth": 100,
+    "printWidth": 80,
     "trailingComma": "all",
     "semi": true,
     "jsxSingleQuote": true,

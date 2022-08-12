@@ -1,7 +1,8 @@
-import { IMiddleware } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
+
 import { TokenDto } from '../users/dto/token.dto';
+import { IMiddleware } from './middleware.interface';
 
 export class AuthMiddleware implements IMiddleware {
     constructor(private secret: string) {}
