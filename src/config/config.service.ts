@@ -16,7 +16,7 @@ export class ConfigService implements IConfigService {
                 '[ConfigService] Cannot read .env file or its does not exist',
             );
         } else {
-            console.log('[ConfigService] .env loaded');
+            this.logger.log('[ConfigService] .env loaded');
             this.config = result.parsed as DotenvParseOutput;
         }
     }
