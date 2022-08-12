@@ -1,5 +1,3 @@
-if (!process.env.IS_TS_NODE) require('module-alias/register');
-
 import 'reflect-metadata';
 
 import { Container } from 'inversify';
