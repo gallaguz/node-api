@@ -10,7 +10,7 @@
         "@app": "./dist"
     },
     "scripts": {
-        "start": "node dist/main.js",
+        "start": "node -r module-alias/register ./dist/main.js",
         "lint": "eslint ./src/**",
         "lint:fix": "eslint ./src/** --fix",
         "build": "tsc",
