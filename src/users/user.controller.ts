@@ -1,16 +1,18 @@
-import { BaseController } from '../common';
-import { ILogger } from '../logger';
 import { NextFunction, Request, Response } from 'express';
-import { HttpError } from '../errors';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '../types';
-import { IUserController } from './user.controller.interface';
-import { UserLoginDto, UserRegisterDto } from '@app/users/dto';
-import { ValidateMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
-import { IConfigService } from '../config/config.service.interface';
-import { IUserService } from './user.service.interface';
-import { AuthGuard } from '../common/auth.guard';
+
+import { BaseController, ValidateMiddleware, AuthGuard } from '@app/common';
+import { IConfigService } from '@app/config';
+import { HttpError } from '@app/errors';
+import { ILogger } from '@app/logger';
+import { TYPES } from '@app/types';
+import {
+    UserLoginDto,
+    UserRegisterDto,
+    IUserService,
+    IUserController,
+} from '@app/users';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -49,7 +51,10 @@ export class UserController extends BaseController implements IUserController {
     ): Promise<void> {
         const user = await this.userService.validateUser(body);
         if (!user) return next(new HttpError(401, 'Auth error', 'login'));
-        const jwt = await this.signJWT(body.email, this.configService.get('SECRET'));
+        const jwt = await this.signJWT(
+            body.email,
+            this.configService.get('SECRET'),
+        );
         this.ok(res, { jwt });
     }
 
@@ -63,7 +68,11 @@ export class UserController extends BaseController implements IUserController {
         this.ok(res, { email: result.email, id: result.id });
     }
 
-    async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+    async info(
+        { user }: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         const userInfo = await this.userService.getUserInfo(user);
         this.ok(res, { email: userInfo?.email, id: userInfo?.id });
     }

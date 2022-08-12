@@ -1,15 +1,18 @@
 import 'reflect-metadata';
-import express, { Express } from 'express';
+
 import { Server } from 'http';
-import { UserController } from './users';
-import { IExceptionFilter } from './errors';
-import { ILogger } from './logger';
-import { inject, injectable } from 'inversify';
-import { TYPES } from './types';
+
 import { json } from 'body-parser';
-import { IConfigService } from './config/config.service.interface';
-import { PrismaService } from './database/prisma.service';
-import { AuthMiddleware } from './common/auth.middleware';
+import express, { Express } from 'express';
+import { inject, injectable } from 'inversify';
+
+import { AuthMiddleware } from '@app/common';
+import { IConfigService } from '@app/config';
+import { PrismaService } from '@app/database';
+import { IExceptionFilter } from '@app/errors';
+import { ILogger } from '@app/logger';
+import { TYPES } from '@app/types';
+import { UserController } from '@app/users';
 
 @injectable()
 export class App {
@@ -31,7 +34,9 @@ export class App {
 
     useMiddleware(): void {
         this.app.use(json());
-        const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
+        const authMiddleware = new AuthMiddleware(
+            this.configService.get('SECRET'),
+        );
         this.app.use(authMiddleware.execute.bind(authMiddleware));
     }
 

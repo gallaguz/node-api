@@ -19,4 +19,7 @@ services:
     expose:
       - '5432'
     volumes:
-      - ./db/postgres/db_files:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

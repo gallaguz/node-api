@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { ILogger } from '../logger';
 import { Response, Router } from 'express';
-import { ExpressReturnType, IControllerRoute } from './route.interface';
 import { injectable } from 'inversify';
+
+import { ILogger } from '../logger';
+import { ExpressReturnType, IControllerRoute } from './route.interface';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
