@@ -29,7 +29,7 @@
         /* Modules */
         "module": "commonjs",
         /* Specify what module code is generated. */
-//        "rootDir": "src",
+        //        "rootDir": "src",
         /* Specify the root folder within your source files. */
         "moduleResolution": "node",
         /* Specify how TypeScript looks up a file from a given module specifier. */
@@ -118,6 +118,12 @@
         "skipLibCheck": true
         /* Skip type checking all .d.ts files. */
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "tests", "prisma"]
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "tests",
+        "prisma"
+    ]
 }
