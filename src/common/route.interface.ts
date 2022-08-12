@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 
-import { IMiddleware } from './middleware.interface';
+import { IMiddleware } from '@app/common';
 
-export interface IControllerRoute {
+export interface IRouteInterface {
     path: string;
     func: (req: Request, res: Response, next: NextFunction) => void;
     method: keyof Pick<
