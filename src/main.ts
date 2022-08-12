@@ -21,7 +21,7 @@ async function bootstrap(): Promise<IBootstrapReturn> {
     await app
         .init()
         .then(() => {
-            console.log('[AppInit] Initiation success');
+            new LoggerService().log('[AppInit] Initiation success');
         })
         .catch((e) => {
             console.log(e.message);
