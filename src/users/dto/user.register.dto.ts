@@ -1,8 +1,12 @@
-import { IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
-import { UserCredentialsDto } from './user.credentials.dto';
+export class UserRegisterDto {
+    @IsEmail({}, { message: 'Wrong email' })
+    email: string;
 
-export class UserRegisterDto extends UserCredentialsDto {
+    @IsString({ message: 'Wrong password' })
+    password: string;
+
     @IsString({ message: 'Wrong name' })
     name: string;
 }
