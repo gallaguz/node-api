@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
-import { ILogger } from '../logger';
-import { TYPES } from '../types';
+import { ILogger } from '@app/logger';
+import { TYPES } from '@app/types';
 
 @injectable()
 export class PrismaService {
