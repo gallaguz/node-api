@@ -10,9 +10,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model UserModel {
-    id          Int     @id @default(autoincrement())
-    email       String
-    password    String
-    name        String
+model User {
+  // Fields
+  id           Int           @id @default(autoincrement())
+  uuid         String        @unique @default(uuid())
+  name         String        @db.VarChar(255)
+  email        String        @db.VarChar(255)
+  password     Password?
+  refreshToken RefreshToken?
+  //  role         Role?       @default(user)
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map(name: "users")
 }
+
+model Password {
+  // Fields
+  id       Int    @id @default(autoincrement())
+  userId   Int    @unique
+  password String @db.VarChar(255)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map(name: "passwords")
+}
+
+model RefreshToken {
+  // Fields
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
+  token  String @db.VarChar(255)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map(name: "tokens")
+}
+
+//model Role {
+//  // Fields
+//  id     Int    @id @default(autoincrement())
+//  role  String @db.VarChar(255)
+//
+//  // Relations
+//  user User @relation(fields: [userId], references: [id])
+//
+//  // Timestamps
+//  createdAt DateTime @default(now()) @map(name: "created_at")
+//  updatedAt DateTime @updatedAt @map(name: "updated_at")
+//
+//  @@map(name: "tokens")
+//}
+
+//enum UserRoleEnum {
+//  user
+//  admin
+//  superadmin
+//}
