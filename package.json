@@ -8,8 +8,8 @@
         "lint:fix": "eslint ./src/** --fix",
         "build": "tsc",
         "dev": "nodemon",
-        "test": "jest",
-        "test:e2e": "jest --config jest.e2e.config.ts",
+        "test": "jest --coverage",
+        "test:e2e": "jest --config jest.e2e.config.ts --coverage",
         "dev:inspect": "nodemon -e ts,json --exec node --inspect=localhost:9222 -r ts-node/register src/main.ts",
         "debug": "nodemon --exec node --inspect-brk=0.0.0.0:9229 --require ts-node/register src/main.ts",
         "prisma:generate": "npx prisma generate"
