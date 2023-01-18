@@ -1,3 +1,5 @@
+if (!process.env.IS_TS_NODE) require('module-alias/register');
+
 import 'reflect-metadata';
 import { App } from './app';
 import { ILogger, LoggerService } from './logger';
@@ -5,14 +7,14 @@ import { UserController } from './users';
 import { ExceptionFilter, IExceptionFilter } from './errors';
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { TYPES } from './types';
-import { IUserController } from './users/user.controller.interface';
-import { IUserService } from './users/user.service.interface';
-import { UserService } from './users/user.service';
+import { IUserController } from '@app/users';
+import { IUserService } from '@app/users';
+import { UserService } from '@app/users';
 import { IConfigService } from './config/config.service.interface';
 import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
-import { UserRepository } from './users/user.repository';
-import { IUserRepository } from './users/user.repository.interface';
+import { UserRepository } from '@app/users';
+import { IUserRepository } from '@app/users';
 
 export interface IBootstrapReturn {
     appContainer: Container;
