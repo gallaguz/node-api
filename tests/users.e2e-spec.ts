@@ -1,5 +1,5 @@
-import { boot } from '../src/main';
-import { App } from '../src/app';
+import { boot } from '@app/main';
+import { App } from '@app/app';
 import request from 'supertest';
 
 let application: App;
