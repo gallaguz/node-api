@@ -9,10 +9,11 @@ import { inject, injectable } from 'inversify';
 import { AuthMiddleware } from '@app/common';
 import { IConfigService } from '@app/config';
 import { PrismaService } from '@app/database';
-import { IExceptionFilter } from '@app/errors';
-import { ILogger } from '@app/logger';
+import { IExceptionFilter } from '@app/filters';
 import { TYPES } from '@app/types';
-import { UserController } from '@app/users';
+import { ILogger } from 'src/common/logger';
+import { ITokenService } from 'src/token';
+import { IUserController } from 'src/user';
 
 @injectable()
 export class App {
@@ -22,11 +23,12 @@ export class App {
 
     constructor(
         @inject(TYPES.ILogger) private logger: ILogger,
-        @inject(TYPES.UserController) private userController: UserController,
+        @inject(TYPES.UserController) private userController: IUserController,
         @inject(TYPES.ExceptionFilter)
         private exceptionFilter: IExceptionFilter,
         @inject(TYPES.ConfigService) private configService: IConfigService,
         @inject(TYPES.PrismaService) private prismaService: PrismaService,
+        @inject(TYPES.TokenService) private tokenService: ITokenService,
     ) {
         this.app = express();
         this.port = Number(this.configService.get('PORT'));
@@ -35,7 +37,9 @@ export class App {
     useMiddleware(): void {
         this.app.use(json());
         const authMiddleware = new AuthMiddleware(
-            this.configService.get('SECRET'),
+            this.configService,
+            this.logger,
+            this.tokenService,
         );
         this.app.use(authMiddleware.execute.bind(authMiddleware));
     }
@@ -54,7 +58,9 @@ export class App {
         this.useExceptionFilters();
         await this.prismaService.connect();
         this.server = this.app.listen(this.port);
-        this.logger.log(`Started at http://localhost:${this.port}`);
+        this.logger.log(
+            `[${this.constructor.name}] Started at http://localhost:${this.port}`,
+        );
     }
 
     public close(): void {

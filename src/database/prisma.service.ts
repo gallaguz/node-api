@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
-import { ILogger } from '@app/logger';
 import { TYPES } from '@app/types';
+import { ILogger } from 'src/common/logger';
 
 @injectable()
 export class PrismaService {
@@ -15,10 +15,10 @@ export class PrismaService {
     async connect(): Promise<void> {
         try {
             await this.client.$connect();
-            this.logger.log('[PrismaService] Connected successful');
+            this.logger.log(`[${this.constructor.name}] Connected`);
         } catch (e) {
             if (e instanceof Error) {
-                this.logger.error(`[PrismaService] Error: ${e.message}`);
+                this.logger.error(`[${this.constructor.name}] ${e.message}`);
             }
         }
     }

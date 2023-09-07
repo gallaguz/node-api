@@ -4,8 +4,8 @@ import { Container } from 'inversify';
 
 import { App } from '@app/app';
 import { appBindings } from '@app/inversify';
-import { LoggerService } from '@app/logger';
 import { TYPES } from '@app/types';
+import { LoggerService } from 'src/common/logger';
 
 export interface IBootstrapReturn {
     appContainer: Container;

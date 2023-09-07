@@ -12,70 +12,36 @@ datasource db {
 
 model User {
   // Fields
-  id           Int           @id @default(autoincrement())
-  uuid         String        @unique @default(uuid())
-  name         String        @db.VarChar(255)
-  email        String        @db.VarChar(255)
-  password     Password?
-  refreshToken RefreshToken?
-  //  role         Role?       @default(user)
+  id    String @unique @default(uuid())
+  name  String
+  email String @unique
+
+  password String @unique
+
+  // Relations
+  refresh_token RefreshToken[]
 
   // Timestamps
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map(name: "users")
 }
 
-model Password {
-  // Fields
-  id       Int    @id @default(autoincrement())
-  userId   Int    @unique
-  password String @db.VarChar(255)
-
-  // Relations
-  user User @relation(fields: [userId], references: [id])
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-
-  @@map(name: "passwords")
-}
-
 model RefreshToken {
   // Fields
-  id     Int    @id @default(autoincrement())
-  userId Int    @unique
-  token  String @db.VarChar(255)
+  id        String  @unique @default(uuid())
+  user_id   String
+  token     String  @unique
+  is_active Boolean @default(true)
+  exp       Int
 
   // Relations
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [user_id], references: [id])
 
   // Timestamps
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map(name: "tokens")
 }
-
-//model Role {
-//  // Fields
-//  id     Int    @id @default(autoincrement())
-//  role  String @db.VarChar(255)
-//
-//  // Relations
-//  user User @relation(fields: [userId], references: [id])
-//
-//  // Timestamps
-//  createdAt DateTime @default(now()) @map(name: "created_at")
-//  updatedAt DateTime @updatedAt @map(name: "updated_at")
-//
-//  @@map(name: "tokens")
-//}
-
-//enum UserRoleEnum {
-//  user
-//  admin
-//  superadmin
-//}
