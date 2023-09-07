@@ -2,8 +2,8 @@ import { config, DotenvConfigOutput, DotenvParseOutput } from 'dotenv';
 import { inject, injectable } from 'inversify';
 
 import { IConfigService } from '@app/config';
-import { ILogger } from '@app/logger';
 import { TYPES } from '@app/types';
+import { ILogger } from 'src/common/logger';
 
 @injectable()
 export class ConfigService implements IConfigService {
