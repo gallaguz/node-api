@@ -10,15 +10,13 @@ import {
 import { CookiesGuardMiddleware } from '@app/common/middlewares/cookies.guard.middleware';
 import { IConfigService } from '@app/config';
 import { HttpError } from '@app/errors';
-import { ITokenService, TAccessToken, TTokens } from '@app/token';
+import { ITokenService } from '@app/token';
 import { TYPES } from '@app/types';
 import {
     UserLoginDto,
     UserRegisterDto,
     IUserService,
     IUserController,
-    TRegisterReturnType,
-    UserEntity,
     UserEntityFromModel,
     TUserInfo,
 } from '@app/user';

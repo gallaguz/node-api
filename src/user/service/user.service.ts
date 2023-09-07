@@ -1,4 +1,4 @@
-import { User, PrismaClient, RefreshToken } from '@prisma/client';
+import { User, PrismaClient } from '@prisma/client';
 import { compare, hash } from 'bcryptjs';
 import { inject, injectable } from 'inversify';
 
@@ -18,7 +18,6 @@ import {
     IUserRepository,
     IUserService,
     TLoginReturnType,
-    TRegisterReturnType,
     TUserInfo,
     UserEntity,
     UserLoginDto,
