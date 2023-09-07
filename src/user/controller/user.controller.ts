@@ -7,9 +7,10 @@ import {
     ValidateMiddleware,
     AuthGuardMiddleware,
 } from '@app/common';
+import { CookiesGuardMiddleware } from '@app/common/middlewares/cookies.guard.middleware';
 import { IConfigService } from '@app/config';
 import { HttpError } from '@app/errors';
-import { TTokens } from '@app/token';
+import { ITokenService, TAccessToken, TTokens } from '@app/token';
 import { TYPES } from '@app/types';
 import {
     UserLoginDto,
@@ -29,6 +30,7 @@ export class UserController extends BaseController implements IUserController {
         @inject(TYPES.ConfigService) private configService: IConfigService,
         @inject(TYPES.ILogger) private loggerService: ILogger,
         @inject(TYPES.UserService) private userService: IUserService,
+        @inject(TYPES.TokenService) private tokenService: ITokenService,
     ) {
         super(loggerService);
         this.bindRoutes([
@@ -43,6 +45,12 @@ export class UserController extends BaseController implements IUserController {
                 func: this.registration,
                 method: 'post',
                 middlewares: [new ValidateMiddleware(UserRegisterDto)],
+            },
+            {
+                path: '/refresh',
+                func: this.refresh,
+                method: 'post',
+                middlewares: [new CookiesGuardMiddleware()],
             },
             {
                 path: '/info',
@@ -86,7 +94,15 @@ export class UserController extends BaseController implements IUserController {
             if (!result) next(new HttpError(401, 'Auth error', 'login'));
 
             const { accessToken, refreshToken } = result;
-            this.ok<TTokens>(res, { accessToken, refreshToken });
+
+            const maxAge = Number(
+                this.configService.get('COOKIES_JWT_REFRESH_TOKEN_EXP'),
+            );
+            res.cookie('refreshToken', refreshToken, {
+                maxAge,
+                httpOnly: true,
+            });
+            this.ok(res, { accessToken });
         } catch (error) {
             next(error);
         }
@@ -97,35 +113,39 @@ export class UserController extends BaseController implements IUserController {
         res: Response,
         next: NextFunction,
     ): Promise<void> {
-        this.logger.debug('[UserController]: ', userId);
+        this.logger.debug(`[${this.constructor.name}]: ${userId}`);
 
         try {
             const info: TUserInfo = await this.userService.getUserInfo(userId);
 
             const userEntity = new UserEntityFromModel(info.user);
 
-            this.ok(res, { user: userEntity, token: info.token });
+            this.ok(res, { user: userEntity, tokens: info.tokens });
         } catch (error) {
             next(error);
         }
     }
 
-    // signJWT(uuid: string, secret: string): Promise<string> {
-    //     return new Promise((resolve, reject) => {
-    //         sign(
-    //             {
-    //                 uuid: uuid,
-    //                 iat: Math.floor(Date.now() / 1000),
-    //             },
-    //             secret,
-    //             {
-    //                 algorithm: 'HS256',
-    //             },
-    //             (err, token) => {
-    //                 if (err) reject();
-    //                 resolve(token as string);
-    //             },
-    //         );
-    //     });
-    // }
+    async refresh(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
+        const decoded = await this.tokenService.validateRefreshToken(
+            req.cookies.refreshToken,
+        );
+
+        const { accessToken, refreshToken } = await this.tokenService.refresh(
+            decoded,
+        );
+
+        const maxAge = Number(
+            this.configService.get('COOKIES_JWT_REFRESH_TOKEN_EXP'),
+        );
+        res.cookie('refreshToken', refreshToken, {
+            maxAge,
+            httpOnly: true,
+        });
+        this.ok(res, { accessToken });
+    }
 }

@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { Server } from 'http';
 
 import { json } from 'body-parser';
+import cookieParser from 'cookie-parser';
 import express, { Express } from 'express';
 import { inject, injectable } from 'inversify';
 
@@ -48,12 +49,17 @@ export class App {
         this.app.use('/users', this.userController.router);
     }
 
+    useCookie(): void {
+        this.app.use(cookieParser());
+    }
+
     useExceptionFilters(): void {
         this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
     }
 
     public async init(): Promise<void> {
         this.useMiddleware();
+        this.useCookie();
         this.useRoutes();
         this.useExceptionFilters();
         await this.prismaService.connect();

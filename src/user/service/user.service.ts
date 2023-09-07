@@ -5,7 +5,13 @@ import { inject, injectable } from 'inversify';
 import { IConfigService } from '@app/config';
 import { CLIENT_ERROR, STATUS_CODES_MESSAGES_MAP } from '@app/constants';
 import { HttpError } from '@app/errors';
-import { ITokenService, TUuid } from '@app/token';
+import {
+    ITokenService,
+    TRefreshToken,
+    TTokenDecoded,
+    TTokens,
+    TUuid,
+} from '@app/token';
 import { TYPES } from '@app/types';
 import {
     IUserEntity,
@@ -57,46 +63,6 @@ export class UserService implements IUserService {
 
             throw new HttpError(400, 'Cant create user');
         }
-
-        // return this.prisma.$transaction(async (transaction) => {
-        //     let newUser;
-        //
-        //     try {
-        //         const data = {
-        //             data: {
-        //                 name: userEntity.name,
-        //                 email: userEntity.email,
-        //                 password: userEntity.password,
-        //             },
-        //         };
-        //
-        //         newUser = await transaction.user.create(data);
-        //     } catch (e) {
-        //         this.logger.error(e);
-        //
-        //         throw new HttpError(400, 'Cant create user');
-        //     }
-        //
-        //     const refreshToken = await this.tokenService.generateRefreshToken(
-        //         newUser.id,
-        //     );
-        //
-        //     await this.tokenService.validateRefreshToken(refreshToken);
-        //
-        //     const data = {
-        //         data: { token: refreshToken, userId: newUser.id },
-        //     };
-        //     const createdToken = await transaction.refreshToken.create(data);
-        //
-        //     if (!createdToken) {
-        //         throw new HttpError(400, 'Cant create token', 'register');
-        //     }
-        //     const accessToken = await this.tokenService.generateAccessToken(
-        //         newUser.id,
-        //     );
-        //
-        //     return { ...newUser, refreshToken, accessToken };
-        // });
     }
 
     async login(dto: UserLoginDto): Promise<TLoginReturnType> {
@@ -118,15 +84,13 @@ export class UserService implements IUserService {
             );
         }
 
-        const { id } = existedUser;
-
         const refreshToken: string =
-            await this.tokenService.generateRefreshToken(id);
+            await this.tokenService.generateRefreshToken(existedUser.id);
 
         await this.tokenService.saveRefreshToken(refreshToken);
 
         const accessToken: string = await this.tokenService.generateAccessToken(
-            id,
+            existedUser.id,
         );
 
         return { accessToken, refreshToken };
@@ -138,11 +102,11 @@ export class UserService implements IUserService {
 
     async getUserInfo(userId: TUuid): Promise<TUserInfo> {
         let user;
-        let token;
+        let tokens;
 
         try {
             user = await this.usersRepository.getUserByUserId(userId);
-            token = await this.tokenService.findByUserId(userId);
+            tokens = await this.tokenService.findByUserId(userId);
         } catch (e) {
             this.logger.log('UserService: getUserInfo: err: ', e);
             throw new HttpError(
@@ -160,12 +124,29 @@ export class UserService implements IUserService {
             );
         }
 
-        return { user, token };
+        return { user, tokens };
     }
 
     // async activate(activationLink) {}
 
     // async logout(email, password) {}
 
-    // async refresh(refreshToken) {}
+    async refresh(refreshToken: TRefreshToken): Promise<TTokens> {
+        try {
+            const decoded: TTokenDecoded =
+                await this.tokenService.validateRefreshToken(refreshToken);
+
+            return this.tokenService.refresh(decoded);
+        } catch (error) {
+            if (error instanceof Error) {
+                this.logger.error(error.message);
+            }
+
+            throw new HttpError(
+                CLIENT_ERROR.UNAUTHORIZED,
+                STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR.UNAUTHORIZED],
+                'refresh',
+            );
+        }
+    }
 }

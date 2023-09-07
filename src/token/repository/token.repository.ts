@@ -32,15 +32,11 @@ export class TokenRepository {
         }
     }
 
-    public async findByUserId(userId: TUuid): Promise<RefreshToken | null> {
-        const where = { user_id: userId };
+    public async findByUserId(userId: TUuid): Promise<Array<RefreshToken>> {
+        const where = { user_id: userId, is_active: true };
 
-        const token = await this.prismaService.client.refreshToken.findFirst({
+        return this.prismaService.client.refreshToken.findMany({
             where,
         });
-
-        if (!token) return null;
-
-        return token;
     }
 }

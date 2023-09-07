@@ -42,21 +42,6 @@ export class AuthMiddleware implements IMiddleware {
                 }
                 next(error);
             }
-
-            // verify(token, this.secret, (err, payload) => {
-            //     this.logger.log('AuthMiddleware: err', err);
-            //     if (err) next();
-            //
-            //     this.logger.log('AuthMiddleware: payload', payload);
-            //
-            //     if (payload) {
-            //         // TODO get uuid from TokenService
-            //         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //         // @ts-ignore
-            //         req.uuid = payload.uuid;
-            //         next();
-            //     }
-            // });
         } else {
             next();
         }

@@ -13,10 +13,10 @@ export class ConfigService implements IConfigService {
         const result: DotenvConfigOutput = config();
         if (result.error) {
             this.logger.error(
-                '[ConfigService] Cannot read .env file or its does not exist',
+                `[${this.constructor.name}] Cannot read .env file or its does not exist`,
             );
         } else {
-            this.logger.log('[ConfigService] .env loaded');
+            this.logger.log(`[${this.constructor.name}] .env loaded`);
             this.config = result.parsed as DotenvParseOutput;
         }
     }

@@ -15,7 +15,7 @@ export class PrismaService {
     async connect(): Promise<void> {
         try {
             await this.client.$connect();
-            this.logger.log(`[${this.constructor.name}] Connected`);
+            this.logger.info(`[${this.constructor.name}] Connected`);
         } catch (e) {
             if (e instanceof Error) {
                 this.logger.error(`[${this.constructor.name}] ${e.message}`);

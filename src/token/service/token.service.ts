@@ -17,6 +17,8 @@ import {
 import { TYPES } from '@app/types';
 import { ILogger, BaseService } from 'src/common';
 
+import { TTokens } from '../types';
+
 @injectable()
 export class TokenService extends BaseService implements ITokenService {
     private readonly accessTokenSecret: string;
@@ -42,6 +44,18 @@ export class TokenService extends BaseService implements ITokenService {
             'JWT_REFRESH_EXPIRES_IN',
         );
         this.algorithm = <Algorithm>this.configService.get('JWT_ALGORITHM');
+    }
+
+    public async refresh({ userId }: TTokenDecoded): Promise<TTokens> {
+        const accessToken = await this.generateAccessToken(userId);
+        const refreshToken = await this.generateRefreshToken(userId);
+
+        await this.saveRefreshToken(refreshToken);
+
+        return {
+            accessToken,
+            refreshToken,
+        };
     }
 
     public async saveRefreshToken(
@@ -134,10 +148,10 @@ export class TokenService extends BaseService implements ITokenService {
         }
     }
 
-    public async findByUserId(userId: TUuid): Promise<RefreshToken> {
-        let token;
+    public async findByUserId(userId: TUuid): Promise<Array<RefreshToken>> {
+        let tokens;
         try {
-            token = await this.tokenRepository.findByUserId(userId);
+            tokens = await this.tokenRepository.findByUserId(userId);
         } catch (error) {
             throw this.serviceError({
                 originalError: error,
@@ -145,13 +159,13 @@ export class TokenService extends BaseService implements ITokenService {
             });
         }
 
-        if (!token) {
+        if (!tokens.length) {
             throw this.serviceError({
-                message: 'Refresh Token not found',
+                message: 'Refresh Tokens not found',
                 statusCode: CLIENT_ERROR.NOT_FOUND,
             });
         }
 
-        return token;
+        return tokens;
     }
 }

@@ -29,7 +29,7 @@ export type TRegisterReturnType = User & {
 
 export type TUserInfo = {
     user: User;
-    token: RefreshToken;
+    tokens: Array<RefreshToken>;
 };
 
 // Extract `UsersWithPosts` type with
