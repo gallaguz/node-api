@@ -3,3 +3,5 @@
 /dist
 /.clinic
 /.env
+/coverage/
+/node_modules/
