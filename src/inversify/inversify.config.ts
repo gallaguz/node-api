@@ -1,17 +1,17 @@
 import { ContainerModule, interfaces } from 'inversify';
 
 import { App } from '@app/app';
+import { ILogger, LoggerService } from '@app/common';
 import { ConfigService, IConfigService } from '@app/config';
 import { PrismaService } from '@app/database';
 import { ExceptionFilter, IExceptionFilter } from '@app/filters';
-import { TYPES } from '@app/types';
-import { ILogger, LoggerService } from 'src/common/logger';
 import {
     TokenService,
     ITokenService,
     ITokenRepository,
     TokenRepository,
-} from 'src/token';
+} from '@app/token';
+import { TYPES } from '@app/types';
 import {
     IUserController,
     IUserRepository,
@@ -19,7 +19,7 @@ import {
     UserController,
     UserRepository,
     UserService,
-} from 'src/user';
+} from '@app/user';
 
 const appBindings = new ContainerModule((bind: interfaces.Bind) => {
     bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();

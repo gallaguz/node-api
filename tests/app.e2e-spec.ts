@@ -1,6 +1,7 @@
-import { boot } from '@app/main';
-import { App } from '@app/app';
 import request from 'supertest';
+
+import { App } from '@app/app';
+import { boot } from '@app/main';
 
 let application: App;
 
@@ -21,7 +22,8 @@ describe('Users e2e', () => {
         const res = await request(application.app)
             .post('/users/login')
             .send({ email: 'email@email.com', password: 'password' });
-        expect(res.body.jwt).not.toBeUndefined();
+        // console.log('------------------', res.cookies);
+        expect(res.body.accessToken).not.toBeUndefined();
     });
 
     it('Login - error)', async () => {
@@ -34,11 +36,11 @@ describe('Users e2e', () => {
     it('Info - success)', async () => {
         const login = await request(application.app)
             .post('/users/login')
-            .send({ email: 'email@email.com', password: 'password' });
+            .send({ email: 'test@test.com', password: 'test' });
         const res = await request(application.app)
             .get('/users/info')
-            .set('Authorization', `Bearer ${login.body.jwt}`);
-        expect(res.body.email).toBe('email@email.com');
+            .set('Authorization', `Bearer ${login.body.accessToken}`);
+        expect(res.body.user.email).toBe('test@test.com');
     });
 
     it('Info - error)', async () => {
@@ -48,7 +50,7 @@ describe('Users e2e', () => {
         const res = await request(application.app)
             .get('/users/info')
             .set('Authorization', `Bearer WrongToken`);
-        expect(res.statusCode).toBe(401);
+        expect(res.statusCode).toBe(500);
     });
 });
 

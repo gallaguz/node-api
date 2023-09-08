@@ -2,6 +2,7 @@ import { RefreshToken } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { Algorithm } from 'jsonwebtoken';
 
+import { ILogger, BaseService } from '@app/common';
 import { IConfigService } from '@app/config';
 import { CLIENT_ERROR } from '@app/constants';
 import {
@@ -13,11 +14,9 @@ import {
     TUuid,
     TRefreshToken,
     TAccessToken,
+    TTokens,
 } from '@app/token';
 import { TYPES } from '@app/types';
-import { ILogger, BaseService } from 'src/common';
-
-import { TTokens } from '../types';
 
 @injectable()
 export class TokenService extends BaseService implements ITokenService {

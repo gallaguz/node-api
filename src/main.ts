@@ -3,9 +3,9 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import { App } from '@app/app';
+import { LoggerService } from '@app/common';
 import { appBindings } from '@app/inversify';
 import { TYPES } from '@app/types';
-import { LoggerService } from 'src/common/logger';
 
 export interface IBootstrapReturn {
     appContainer: Container;
