@@ -1,20 +1,22 @@
 import 'reflect-metadata';
 
 import { Server } from 'http';
+import process from 'process';
 
 import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express, { Express } from 'express';
 import { inject, injectable } from 'inversify';
+import morgan from 'morgan';
 
-import { AuthMiddleware } from '@app/common';
-import { IConfigService } from '@app/config';
-import { PrismaService } from '@app/database';
-import { IExceptionFilter } from '@app/filters';
-import { TYPES } from '@app/types';
-import { ILogger } from 'src/common/logger';
-import { ITokenService } from 'src/token';
-import { IUserController } from 'src/user';
+import { APP_KEYS } from '@app/app-keys';
+import { IConfigService } from '@app/config/config.service.interface';
+import { PrismaService } from '@app/database/prisma.service';
+import { IExceptionFilter } from '@app/filters/exception.filter.interface';
+import { ILogger } from '@app/logger/logger.interface';
+import { AuthMiddleware } from '@app/middlewares/auth.middleware';
+import { ITokenService } from '@app/token/token.service.interface';
+import { IUserController } from '@app/user/user.controller.interface';
 
 @injectable()
 export class App {
@@ -23,23 +25,38 @@ export class App {
     port: number;
 
     constructor(
-        @inject(TYPES.ILogger) private logger: ILogger,
-        @inject(TYPES.UserController) private userController: IUserController,
-        @inject(TYPES.ExceptionFilter)
+        @inject(APP_KEYS.LoggerService) private loggerService: ILogger,
+        @inject(APP_KEYS.UserController)
+        private userController: IUserController,
+        @inject(APP_KEYS.ExceptionFilter)
         private exceptionFilter: IExceptionFilter,
-        @inject(TYPES.ConfigService) private configService: IConfigService,
-        @inject(TYPES.PrismaService) private prismaService: PrismaService,
-        @inject(TYPES.TokenService) private tokenService: ITokenService,
+        @inject(APP_KEYS.ConfigService) private configService: IConfigService,
+        @inject(APP_KEYS.PrismaService) private prismaService: PrismaService,
+        @inject(APP_KEYS.TokenService) private tokenService: ITokenService,
     ) {
         this.app = express();
-        this.port = Number(this.configService.get('PORT'));
+        this.port = Number(this.configService.get('API_HTTP_PORT_INTERNAL'));
     }
 
     useMiddleware(): void {
         this.app.use(json());
+
+        if (process.env.LOG_LEVEL === 'TRACE') {
+            this.app.use(
+                morgan('dev', {
+                    skip: () => {
+                        return (
+                            process.env.NODE_ENV === 'test' ||
+                            process.env.NODE_ENV === 'prod'
+                        );
+                    },
+                }),
+            );
+        }
+
         const authMiddleware = new AuthMiddleware(
             this.configService,
-            this.logger,
+            this.loggerService,
             this.tokenService,
         );
         this.app.use(authMiddleware.execute.bind(authMiddleware));
@@ -64,8 +81,8 @@ export class App {
         this.useExceptionFilters();
         await this.prismaService.connect();
         this.server = this.app.listen(this.port);
-        this.logger.log(
-            `[${this.constructor.name}] Started at http://localhost:${this.port}`,
+        this.loggerService.info(
+            `[ ${this.constructor.name} ] Listening on port:${this.port}`,
         );
     }
 

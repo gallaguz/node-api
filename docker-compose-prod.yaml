@@ -1,0 +1,57 @@
+version: '3.1'
+
+services:
+  node_api_prod:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.prod
+    container_name: node_api_prod
+    restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      ENV_FILE_PATH: ${ENV_FILE_PATH}
+    ports:
+      - 8000:8000
+    depends_on:
+      - node_api_postgres_prod
+    volumes:
+      - ./:/usr/src/app
+
+  node_api_postgres_prod:
+    image: postgres:13.3-alpine
+    container_name: node_api_postgres_prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+
+  node_api_rmq_prod:
+    image: rabbitmq:3-management
+    container_name: node_api_rmq_prod
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rabbitmq_data_prod:/var/lib/rabbitmq
+      - rabbitmq_log_prod:/var/log/rabbitmq
+
+volumes:
+  pgdata_prod:
+  rabbitmq_data_prod:
+  rabbitmq_log_prod:
+

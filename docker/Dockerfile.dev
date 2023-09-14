@@ -1,0 +1,17 @@
+FROM node:18-alpine
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+RUN npm i -g npm@latest nodemon
+
+COPY --chown=node:node . /usr/src/app
+
+RUN npm ci
+
+USER node
+
+EXPOSE 8000/tcp
+
+CMD nodemon

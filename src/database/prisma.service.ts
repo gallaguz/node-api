@@ -1,29 +1,34 @@
+import process from 'process';
+
 import { PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '@app/types';
-import { ILogger } from 'src/common/logger';
+import { APP_KEYS } from '@app/app-keys';
+import { TRACE_TYPE, Trace } from '@app/decorators/trace';
+import { ILogger } from '@app/logger/logger.interface';
 
 @injectable()
 export class PrismaService {
     client: PrismaClient;
 
-    constructor(@inject(TYPES.ILogger) private logger: ILogger) {
+    constructor(
+        @inject(APP_KEYS.LoggerService) private loggerService: ILogger,
+    ) {
         this.client = new PrismaClient();
     }
 
+    @Trace(TRACE_TYPE.ASYNC)
     async connect(): Promise<void> {
         try {
             await this.client.$connect();
-            this.logger.info(`[${this.constructor.name}] Connected`);
-        } catch (e) {
-            if (e instanceof Error) {
-                this.logger.error(`[${this.constructor.name}] ${e.message}`);
-            }
+            this.loggerService.info(`Connected`);
+        } catch (error) {
+            if (error instanceof Error) this.loggerService.error(error.message);
         }
     }
 
     async disconnect(): Promise<void> {
         await this.client.$disconnect();
+        this.loggerService.error(`disconnect`);
     }
 }

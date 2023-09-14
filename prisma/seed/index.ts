@@ -1,6 +1,13 @@
+import process from 'process';
+
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
+import { config } from 'dotenv';
+
+config({
+    path: process.env.ENV_FILE_PATH,
+});
 
 const prisma = new PrismaClient();
 
@@ -45,10 +52,10 @@ async function main(): Promise<void> {
     const userData = await getUsers();
 
     for (const { name, email, password } of userData) {
-        const user = await prisma.user.upsert({
-            where: { email },
-            update: {},
-            create: {
+        const user = await prisma.user.create({
+            // where: { email },
+            // update: {},
+            data: {
                 name,
                 email,
                 password,

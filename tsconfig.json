@@ -123,7 +123,10 @@
     ],
     "exclude": [
         "node_modules",
-        "tests",
-        "prisma"
+        "src/tests",
+        "prisma",
+        "dist",
+        ".idea",
+        "logs",
     ]
 }
