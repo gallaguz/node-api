@@ -1,0 +1,27 @@
+FROM node:18-alpine AS prepare
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY ./src ./src
+
+RUN npm install -g npm@10.1.0 typescript
+
+FROM prepare AS builder
+
+RUN npm ci && tsc
+
+FROM node:18-alpine as development
+
+WORKDIR /app
+
+COPY --chown=node:node package*.json ./
+
+COPY --chown=node:node ./src/database/prisma/ ./src/database/prisma/
+
+RUN npm ci --omit=dev && npx prisma generate
+
+COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
+
+USER node

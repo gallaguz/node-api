@@ -1,5 +1,4 @@
-import { User, PrismaClient } from '@prisma/client';
-import { compare, hash } from 'bcryptjs';
+import { User } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
@@ -13,12 +12,7 @@ import { HttpError } from '@app/errors/http.error';
 import { ILogger } from '@app/logger/logger.interface';
 import { IPasswordService } from '@app/password/password.service.interface';
 import { ITokenService } from '@app/token/token.service.interface';
-import {
-    TRefreshToken,
-    TTokenDecoded,
-    TTokens,
-    TUuid,
-} from '@app/token/token.types';
+import { TTokens, TUuid } from '@app/token/token.types';
 import { UserEntity } from '@app/user/user.entity';
 import { IUserEntity } from '@app/user/user.entity.interface';
 import { UserLoginDto } from '@app/user/user.login.dto';

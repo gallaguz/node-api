@@ -1,27 +1,14 @@
-import process from 'process';
+import * as process from 'process';
 
-import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
-import { config } from 'dotenv';
-
-config({
-    path: process.env.ENV_FILE_PATH,
-});
 
 const prisma = new PrismaClient();
 
 const salt = Number(process.env.SALT);
 
-const randomUser = (): Record<string, string> => {
-    const name = faker.person.fullName();
-    const email = faker.internet.email();
-    const password = faker.internet.password();
-    return { name, email, password };
-};
-
 const getUsers = async (): Promise<Array<Record<string, string>>> => {
-    const userData: Array<Record<string, string>> = [
+    return [
         {
             name: 'admin',
             email: 'admin@admin.com',
@@ -37,13 +24,12 @@ const getUsers = async (): Promise<Array<Record<string, string>>> => {
             email: 'test@test.com',
             password: await hash('test', salt),
         },
+        {
+            name: 'development',
+            email: 'development@development.com',
+            password: await hash('development', salt),
+        },
     ];
-
-    for (let i = 0; i < 10; i++) {
-        userData.push(randomUser());
-    }
-
-    return userData;
 };
 
 async function main(): Promise<void> {

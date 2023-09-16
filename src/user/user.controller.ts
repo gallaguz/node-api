@@ -1,9 +1,8 @@
-import process from 'process';
+import * as process from 'process';
 
 import { User } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { Logger } from 'tslog';
 
 import { APP_KEYS } from '@app/app-keys';
 import { BaseController } from '@app/common/base.controller';
@@ -74,7 +73,7 @@ export class UserController extends BaseController implements IUserController {
         ]);
     }
 
-    // @Trace(TRACE_TYPE.ASYNC)
+    @Trace(TRACE_TYPE.ASYNC)
     async index(
         req: Request<{}, {}, UserRegisterDto>,
         res: Response,
@@ -146,8 +145,6 @@ export class UserController extends BaseController implements IUserController {
         res: Response,
         next: NextFunction,
     ): Promise<void> {
-        // this.loggerService.debug(`[${this.constructor.name}]: ${userId}`);
-
         try {
             const info: TUserInfo = await this.userService.getUserInfo(userId);
 

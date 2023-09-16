@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import { Server } from 'http';
-import process from 'process';
+import * as process from 'process';
 
 import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -35,7 +35,7 @@ export class App {
         @inject(APP_KEYS.TokenService) private tokenService: ITokenService,
     ) {
         this.app = express();
-        this.port = Number(this.configService.get('API_HTTP_PORT_INTERNAL'));
+        this.port = Number(this.configService.get('API_PORT'));
     }
 
     useMiddleware(): void {

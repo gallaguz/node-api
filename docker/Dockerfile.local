@@ -1,0 +1,15 @@
+FROM node:18-alpine as build
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+RUN npm i -g npm@8.19.2 nodemon ts-node typescript
+
+FROM build as local
+
+COPY --chown=node:node . /usr/src/app
+
+RUN npm ci && npx prisma generate
+
+USER node

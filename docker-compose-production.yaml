@@ -1,0 +1,66 @@
+version: '3.1'
+
+services:
+  node_api_production:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.production
+    command: ["node", "-r", "module-alias/register", "./dist/main.js"]
+    container_name: node_api_production
+    restart: always
+    env_file:
+      - .environment/.production.env
+    ports:
+      - 8000:8000
+    depends_on:
+      - node_api_postgres_production
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - node_api_production_network
+
+  node_api_postgres_production:
+    image: postgres:13.3-alpine
+    container_name: node_api_postgres_production
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - pgdata_production:/var/lib/postgresql/data
+    networks:
+      - node_api_production_network
+
+  node_api_rmq_production:
+    image: rabbitmq:3-management
+    container_name: node_api_rmq_production
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rabbitmq_data_production:/var/lib/rabbitmq
+      - rabbitmq_log_production:/var/log/rabbitmq
+    networks:
+      - node_api_production_network
+
+networks:
+    node_api_production_network:
+
+volumes:
+  pgdata_production:
+  rabbitmq_data_production:
+  rabbitmq_log_production:
+

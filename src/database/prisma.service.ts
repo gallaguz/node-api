@@ -1,5 +1,3 @@
-import process from 'process';
-
 import { PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 

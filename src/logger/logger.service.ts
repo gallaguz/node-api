@@ -1,17 +1,17 @@
-import process from 'process';
+import * as process from 'process';
 
 import { injectable } from 'inversify';
 import * as winston from 'winston';
 
 import { LOG_COLOURS, LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
 import { ILogger } from '@app/logger/logger.interface';
-const logFileName = 'logs/error.log';
-
-function level(): string {
-    const env: string | undefined = process.env.NODE_ENV || 'development';
-    const isDevelopment = env === 'development';
-    return isDevelopment ? 'debug' : 'warn';
-}
+// const logFileName = 'logs/error.log';
+//
+// function level(): string {
+//     const env: string | undefined = process.env.NODE_ENV || 'development';
+//     const isDevelopment = env === 'development';
+//     return isDevelopment ? 'debug' : 'warn';
+// }
 
 winston.addColors(LOG_COLOURS);
 
@@ -25,11 +25,11 @@ const format = winston.format.combine(
 
 const transports: Array<any> = [
     new winston.transports.Console(),
-    new winston.transports.File({
-        filename: logFileName,
-        level: LOG_LEVELS_MAP[LOG_LEVELS.ERROR],
-    }),
-    new winston.transports.File({ filename: logFileName }),
+    // new winston.transports.File({
+    //     filename: logFileName,
+    //     level: LOG_LEVELS_MAP[LOG_LEVELS.ERROR],
+    // }),
+    // new winston.transports.File({ filename: logFileName }),
 ];
 
 @injectable()

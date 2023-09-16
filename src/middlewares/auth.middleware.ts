@@ -4,7 +4,6 @@ import { IConfigService } from '@app/config/config.service.interface';
 import { ILogger } from '@app/logger/logger.interface';
 import { IMiddleware } from '@app/middlewares/middleware.interface';
 import { ITokenService } from '@app/token/token.service.interface';
-// import { verify } from 'jsonwebtoken';
 
 export class AuthMiddleware implements IMiddleware {
     private readonly secret: string;

@@ -2,9 +2,8 @@
 /node_modules
 /dist
 /.clinic
-/.envs/.env.dev
 /coverage/
 /node_modules/
 /dumps/
 /logs
-.env*
+*.env

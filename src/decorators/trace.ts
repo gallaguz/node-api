@@ -1,4 +1,4 @@
-import process from 'process';
+import * as process from 'process';
 
 import { loggerService } from '@app/bootstrap';
 import { LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
