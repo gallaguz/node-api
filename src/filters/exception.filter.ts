@@ -1,6 +1,8 @@
 import 'reflect-metadata';
+import Prisma from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
+// Prisma
 
 import { APP_KEYS } from '@app/app-keys';
 import { HttpError } from '@app/errors/http.error';
@@ -27,7 +29,9 @@ export class ExceptionFilter implements IExceptionFilter {
                 status: err.statusCode,
             });
         } else {
-            res.status(500).send({ err: err.message });
+            this.loggerService.error(JSON.stringify(err));
+
+            res.status(500).send({ err: 'Something went wrong' });
         }
         next();
     }
