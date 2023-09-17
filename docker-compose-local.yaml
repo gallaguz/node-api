@@ -23,14 +23,12 @@ services:
     image: postgres:13.3-alpine
     container_name: node_api_postgres_local
     restart: always
+    logging:
+      driver: none
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    logging:
-      options:
-        max-size: 10m
-        max-file: "3"
     ports:
       - 5432:5432
     expose:
@@ -44,6 +42,8 @@ services:
     image: rabbitmq:3-management
     container_name: node_api_rmq_local
     restart: always
+    logging:
+      driver: none
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}

@@ -10,7 +10,7 @@ import { inject, injectable } from 'inversify';
 import morgan from 'morgan';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
+import { APP_ENV, IConfigService } from '@app/config/config.service.interface';
 import { PrismaService } from '@app/database/prisma.service';
 import { IExceptionFilter } from '@app/filters/exception.filter.interface';
 import { ILogger } from '@app/logger/logger.interface';
@@ -46,15 +46,15 @@ export class App {
                 morgan('dev', {
                     skip: () => {
                         return (
-                            process.env.NODE_ENV === 'test' ||
-                            process.env.NODE_ENV === 'prod'
+                            process.env.APP_ENV === APP_ENV.TESTING ||
+                            process.env.APP_ENV === APP_ENV.PRODUCTION
                         );
                     },
                 }),
             );
         }
 
-        const authMiddleware = new AuthMiddleware(
+        const authMiddleware: AuthMiddleware = new AuthMiddleware(
             this.configService,
             this.loggerService,
             this.tokenService,
@@ -63,7 +63,7 @@ export class App {
     }
 
     useRoutes(): void {
-        this.app.use('/users', this.userController.router);
+        this.app.use('/v1/users', this.userController.router);
     }
 
     useCookie(): void {
@@ -82,7 +82,7 @@ export class App {
         await this.prismaService.connect();
         this.server = this.app.listen(this.port);
         this.loggerService.info(
-            `[ ${this.constructor.name} ] Listening on port:${this.port}`,
+            `[ ${this.constructor.name} ] Listening on port: ${this.port}`,
         );
     }
 

@@ -4,7 +4,7 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN npm i -g npm@8.19.2 nodemon ts-node typescript
+RUN npm i -g npm@10.1.0 nodemon ts-node typescript
 
 FROM build as local
 

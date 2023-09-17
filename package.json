@@ -10,7 +10,8 @@
     },
     "scripts": {
         "init:local": "npm run build:local && npm run migrate:local && npm run seed:local",
-        "start:local": "docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env up -d --remove-orphans",
+        "start:local": "docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env up --remove-orphans",
+        "start:local:d": "docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env up -d --remove-orphans",
         "start:local:logs": "docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env up -d --remove-orphans && docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env logs --follow",
         "stop:local": "docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env down --remove-orphans",
         "build:local": "docker-compose -f docker-compose-local.yaml --env-file .environment/.local.env build",
@@ -41,11 +42,21 @@
         "migrate:staging": "docker-compose -f docker-compose-staging.yaml --env-file .environment/.staging.env up -d && docker-compose -f docker-compose-staging.yaml --env-file .environment/.staging.env exec -T node_api_staging npx prisma migrate deploy && docker-compose -f docker-compose-staging.yaml --env-file .environment/.staging.env down --remove-orphans",
         "seed:staging": "docker-compose -f docker-compose-staging.yaml --env-file .environment/.staging.env up -d && docker-compose -f docker-compose-staging.yaml --env-file .environment/.staging.env exec -T node_api_staging node -r module-alias/register ./dist/database/prisma/seed/staging.js && docker-compose -f docker-compose-staging.yaml --env-file .environment/.staging.env down --remove-orphans",
 
+        "init:testing": "npm run build:testing && npm run migrate:testing",
+
+        "test": "docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env up -d --remove-orphans && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run -T node_api_testing npx prisma migrate dev && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run node_api_testing npx jest || true && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env down --remove-orphans",
+
+        "test:cov": "docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env up -d --remove-orphans && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run -T node_api_testing npx prisma migrate dev && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run node_api_testing npx jest  --coverage || true && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env down --remove-orphans",
+
+        "test:e2e": "docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env up -d --remove-orphans && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run -T node_api_testing npx prisma migrate dev && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run node_api_testing npx jest --config jest.e2e.config.ts || true && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env down --remove-orphans",
+
+        "test:e2e:cov": "docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env up -d --remove-orphans && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run -T node_api_testing npx prisma migrate dev && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run node_api_testing npx jest --config jest.e2e.config.ts --coverage || true && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env down --remove-orphans",
+
+        "build:testing": "docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env build",
+        "migrate:testing": "docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env up -d && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env run -T node_api_testing npx prisma migrate dev && docker-compose -f docker-compose-testing.yaml --env-file .environment/.testing.env down --remove-orphans",
+
         "lint": "eslint ./src/**",
-        "lint:fix": "eslint ./src/** --fix",
-        "test": "jest --coverage",
-        "test:e2e": "jest --config jest.e2e.config.ts",
-        "test:e2e:cov": "jest --config jest.e2e.config.ts --coverage"
+        "lint:fix": "eslint ./src/** --fix"
     },
     "keywords": [],
     "author": "",

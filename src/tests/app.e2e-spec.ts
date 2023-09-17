@@ -1,60 +1,74 @@
-import * as request from 'supertest';
+import 'reflect-metadata';
+import { faker } from '@faker-js/faker';
+import request from 'supertest';
 
 import { App } from '../app';
 import { APP_KEYS } from '../app-keys';
 import { appContainer } from '../bootstrap';
 
-let application: App;
+let app: App;
 
-beforeAll(async () => {
-    const application = appContainer.get<App>(APP_KEYS.Application);
-    await application.init();
+beforeAll(async (): Promise<void> => {
+    app = appContainer.get<App>(APP_KEYS.Application);
+    await app.init();
 });
 
 describe('Users e2e', () => {
     it('Register - error (422 Unprocessable Entity)', async () => {
-        const res = await request(application.app)
-            .post('/users/register')
+        const res: request.Response = await request(app.app)
+            .post('/v1/users/register')
             .send({ email: 'email@email.com', password: 'password' });
         expect(res.statusCode).toBe(422);
     });
 
-    it('Login - success)', async () => {
-        const res = await request(application.app)
-            .post('/users/login')
-            .send({ email: 'email@email.com', password: 'password' });
-        // console.log('------------------', res.cookies);
+    it('Register - success', async () => {
+        const res: request.Response = await request(app.app)
+            .post('/v1/users/register')
+            .send({
+                name: faker.person.firstName(),
+                email: faker.internet.email(),
+                password: faker.internet.password(),
+            });
+        expect(res.statusCode).toBe(201);
+    });
+
+    it('Login - success', async () => {
+        await request(app.app).post('/v1/users/register').send({
+            name: 'test',
+            email: 'test@test.com',
+            password: 'test',
+        });
+        const res: request.Response = await request(app.app)
+            .post('/v1/users/login')
+            .send({ email: 'test@test.com', password: 'test' });
         expect(res.body.accessToken).not.toBeUndefined();
     });
 
-    it('Login - error)', async () => {
-        const res = await request(application.app)
-            .post('/users/login')
-            .send({ email: 'email@email.com', password: 'wrongPassword' });
+    it('Login - error', async () => {
+        const res = await request(app.app)
+            .post('/v1/users/login')
+            .send({ email: 'test@test.com', password: 'wrongPassword' });
         expect(res.statusCode).toBe(401);
     });
 
     it('Info - success)', async () => {
-        const login = await request(application.app)
-            .post('/users/login')
+        const login: request.Response = await request(app.app)
+            .post('/v1/users/login')
             .send({ email: 'test@test.com', password: 'test' });
-        const res = await request(application.app)
-            .get('/users/info')
+        const res = await request(app.app)
+            .get('/v1/users/info')
             .set('Authorization', `Bearer ${login.body.accessToken}`);
         expect(res.body.user.email).toBe('test@test.com');
     });
 
     it('Info - error)', async () => {
-        const login = await request(application.app)
-            .post('/users/login')
-            .send({ email: 'email@email.com', password: 'password' });
-        const res = await request(application.app)
-            .get('/users/info')
+        const res = await request(app.app)
+            .get('/v1/users/info')
             .set('Authorization', `Bearer WrongToken`);
         expect(res.statusCode).toBe(500);
     });
 });
 
 afterAll(() => {
-    application.close();
+    app.close();
 });

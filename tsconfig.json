@@ -124,7 +124,7 @@
     ],
     "exclude": [
         "node_modules",
-        "src/tests",
+//        "src/tests",
         "dist",
         ".idea"
     ]
