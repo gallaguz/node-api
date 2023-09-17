@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 
-import { App } from '../app';
-import { APP_KEYS } from '../app-keys';
-import { appContainer } from '../bootstrap';
+import { App } from '@app/app';
+import { APP_KEYS } from '@app/app-keys';
+import { appContainer } from '@app/bootstrap';
 
 let app: App;
 
