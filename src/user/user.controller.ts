@@ -83,7 +83,6 @@ export class UserController extends BaseController implements IUserController {
         try {
             void this.ok(res, { pid: process.pid });
         } catch (error) {
-            if (error instanceof Error) this.loggerService.error(error.message);
             next(error);
         }
     }

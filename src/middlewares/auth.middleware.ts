@@ -29,9 +29,6 @@ export class AuthMiddleware implements IMiddleware {
                 const decoded = this.tokenService.validateAccessToken(token);
                 req.userId = decoded.userId;
             } catch (error) {
-                if (error instanceof Error)
-                    this.loggerService.error(error.message);
-
                 next(error);
             }
         }
