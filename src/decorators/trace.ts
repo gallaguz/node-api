@@ -1,8 +1,8 @@
 import * as process from 'process';
 import * as util from 'util';
 
-import { loggerService } from '@app/bootstrap';
 import { LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
+import { loggerService } from '@app/main';
 
 type TLabel = {
     constructorName: string;

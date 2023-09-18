@@ -4,7 +4,7 @@ import request from 'supertest';
 
 import { App } from '@app/app';
 import { APP_KEYS } from '@app/app-keys';
-import { appContainer } from '@app/bootstrap';
+import { appContainer } from '@app/main';
 
 let app: App;
 

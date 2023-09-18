@@ -8,8 +8,8 @@ import {
     PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 
-import { loggerService } from '@app/bootstrap';
 import { BadRequestError } from '@app/errors/bad-request.error';
+import { loggerService } from '@app/main';
 
 type TLabel = {
     constructorName: string;

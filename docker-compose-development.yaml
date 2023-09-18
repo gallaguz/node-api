@@ -1,11 +1,11 @@
-version: "3.1"
+version: '3.1'
 
 services:
     node_api_development:
         build:
             context: .
             dockerfile: ./docker/Dockerfile.development
-        command: ["node", "-r", "module-alias/register", "./dist/main.js"]
+        command: ['node', '-r', 'module-alias/register', './dist/cluster.js']
         container_name: node_api_development
         restart: always
         env_file:
@@ -30,7 +30,7 @@ services:
         logging:
             options:
                 max-size: 10m
-                max-file: "3"
+                max-file: '3'
         ports:
             - 5432:5432
         expose:
