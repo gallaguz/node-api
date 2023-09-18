@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { compare, hash } from 'bcryptjs';
 
-import { TRACE_TYPE, Trace } from '@app/decorators/trace';
+import { Trace } from '@app/decorators/trace';
 import { IUserEntity } from '@app/user/user.entity.interface';
 
 export class UserEntity implements IUserEntity {
@@ -35,12 +35,12 @@ export class UserEntity implements IUserEntity {
         this._passwordHash = passwordHash;
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     public async hash(password: string, salt: number): Promise<string> {
         return hash(password, salt);
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     public async compare(password: string): Promise<boolean> {
         return compare(password, this._passwordHash);
     }

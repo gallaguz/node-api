@@ -3,7 +3,8 @@ import * as process from 'process';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { APP_ENV, IConfigService } from '@app/config/config.service.interface';
+import { IConfigService } from '@app/config/config.service.interface';
+import { APP_ENV, ENV_VARS } from '@app/constants/environment';
 import { ILogger } from '@app/logger/logger.interface';
 
 @injectable()
@@ -29,7 +30,7 @@ export class ConfigService implements IConfigService {
         }
     }
 
-    public get(key: string): string {
+    public get(key: ENV_VARS): string {
         const val = process.env[key];
         if (!val) throw new Error(`Env not found: ${key}`);
         return val;

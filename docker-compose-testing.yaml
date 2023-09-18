@@ -1,64 +1,64 @@
-version: '3.1'
+version: "3.1"
 
 services:
-  node_api_testing:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.testing
-    container_name: node_api_testing
-    restart: always
-    env_file:
-      - .environment/.testing.env
-    ports:
-      - 8000:8000
-    depends_on:
-      - node_api_postgres_testing
-    volumes:
-      - ./:/usr/src/app
-    networks:
-      - node_api_testing_network
+    node_api_testing:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.testing
+        container_name: node_api_testing
+        restart: always
+        env_file:
+            - .environment/.testing.env
+        #    ports:
+        #      - 8000:8000
+        depends_on:
+            - node_api_postgres_testing
+        volumes:
+            - ./:/usr/src/app
+        networks:
+            - node_api_testing_network
 
-  node_api_postgres_testing:
-    image: postgres:13.3-alpine
-    container_name: node_api_postgres_testing
-    restart: always
-    logging:
-      driver: none
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - 5432:5432
-    expose:
-      - 5432
-    volumes:
-      - pgdata_testing:/var/lib/postgresql/data
-    networks:
-      - node_api_testing_network
+    node_api_postgres_testing:
+        image: postgres:13.3-alpine
+        container_name: node_api_postgres_testing
+        restart: always
+        logging:
+            driver: none
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        #    ports:
+        #      - 5432:5432
+        #    expose:
+        #      - 5432
+        volumes:
+            - pgdata_testing:/var/lib/postgresql/data
+        networks:
+            - node_api_testing_network
 
-  node_api_rmq_testing:
-    image: rabbitmq:3-management
-    container_name: node_api_rmq_testing
-    restart: always
-    logging:
-      driver: none
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-    ports:
-      - 15672:15672
-      - 5672:5672
-    volumes:
-      - rabbitmq_data_testing:/var/lib/rabbitmq
-      - rabbitmq_log_testing:/var/log/rabbitmq
-    networks:
-      - node_api_testing_network
+#  node_api_rmq_testing:
+#    image: rabbitmq:3-management
+#    container_name: node_api_rmq_testing
+#    restart: always
+#    logging:
+#      driver: none
+#    environment:
+#      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+#      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+#    ports:
+#      - 15672:15672
+#      - 5672:5672
+#    volumes:
+#      - rabbitmq_data_testing:/var/lib/rabbitmq
+#      - rabbitmq_log_testing:/var/log/rabbitmq
+#    networks:
+#      - node_api_testing_network
 
 networks:
     node_api_testing_network:
 
 volumes:
-  pgdata_testing:
-  rabbitmq_data_testing:
-  rabbitmq_log_testing:
+    pgdata_testing:
+    rabbitmq_data_testing:
+    rabbitmq_log_testing:

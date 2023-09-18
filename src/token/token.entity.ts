@@ -1,6 +1,6 @@
 import { sign, verify, SignOptions, Algorithm } from 'jsonwebtoken';
 
-import { TRACE_TYPE, Trace } from '@app/decorators/trace';
+import { Trace } from '@app/decorators/trace';
 import { ITokenEntity } from '@app/token/token.entity.interface';
 import {
     TAccessToken,
@@ -12,7 +12,7 @@ import {
 export class TokenEntity implements ITokenEntity {
     constructor(private readonly _secret: string) {}
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public sign(
         userId: TUuid,
         expiresIn: string,
@@ -27,17 +27,21 @@ export class TokenEntity implements ITokenEntity {
             };
             return sign(payload, this._secret, options);
         } catch (error) {
+            // TODO
             throw new Error('Sign token error');
         }
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public verify(token: TAccessToken | TRefreshToken): TTokenDecoded {
         const verified: string | TTokenDecoded = <string | TTokenDecoded>(
-            verify(token, this._secret)
+            verify(token, this._secret, {
+                clockTolerance: 5,
+            })
         );
 
         if (typeof verified === 'string') {
+            // TODO
             throw new Error(verified);
         }
 

@@ -1,8 +1,15 @@
-import * as process from 'process';
-import * as util from 'util';
+import process from 'process';
+
+import {
+    PrismaClientInitializationError,
+    PrismaClientKnownRequestError,
+    PrismaClientRustPanicError,
+    PrismaClientUnknownRequestError,
+    PrismaClientValidationError,
+} from '@prisma/client/runtime/library';
 
 import { loggerService } from '@app/bootstrap';
-import { LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
+import { BadRequestError } from '@app/errors/bad-request.error';
 
 type TLabel = {
     constructorName: string;
@@ -22,17 +29,7 @@ const labelConstructor = (
     };
 };
 
-const messageConstructor = (start: Date, end: Date, label: TLabel): void => {
-    loggerService.trace(
-        `${end.getTime() - start.getTime()} - ms ${label.constructorName}-${
-            label.methodName
-        }`,
-    );
-};
-
-export function Trace(
-    message?: string,
-): (
+export function CatchPrismaError(): (
     target: Object,
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<(...args: any[]) => any>,
@@ -44,21 +41,7 @@ export function Trace(
     ): void {
         const originalMethod = descriptor.value;
 
-        if (process.env.LOG_LEVEL !== LOG_LEVELS_MAP[LOG_LEVELS.TRACE]) {
-            descriptor.value = function (...args: any[]): void {
-                return originalMethod?.apply(this, args);
-            };
-        }
-
-        const label: TLabel = labelConstructor(
-            target.constructor.name,
-            propertyKey.toString(),
-            message,
-        );
-
         descriptor.value = function (...args: any[]): Promise<any> {
-            const startTime: Date = new Date();
-
             let value;
 
             try {
@@ -68,8 +51,23 @@ export function Trace(
                         return Promise.resolve(value);
                     }
                 }
-            } finally {
-                messageConstructor(startTime, new Date(), label);
+            } catch (error) {
+                if (
+                    error instanceof PrismaClientKnownRequestError ||
+                    error instanceof PrismaClientUnknownRequestError ||
+                    error instanceof PrismaClientRustPanicError ||
+                    error instanceof PrismaClientInitializationError ||
+                    error instanceof PrismaClientValidationError
+                ) {
+                    throw new BadRequestError({
+                        context: `${
+                            target.constructor.name
+                        }:${propertyKey.toString()}`,
+                        originalError: error,
+                    });
+                } else {
+                    throw error;
+                }
             }
 
             return value;

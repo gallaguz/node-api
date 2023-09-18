@@ -65,7 +65,7 @@ describe('Users e2e', () => {
         const res = await request(app.app)
             .get('/v1/users/info')
             .set('Authorization', `Bearer WrongToken`);
-        expect(res.statusCode).toBe(500);
+        expect(res.statusCode).toBe(400);
     });
 });
 

@@ -7,8 +7,9 @@ import { inject, injectable } from 'inversify';
 import { APP_KEYS } from '@app/app-keys';
 import { BaseController } from '@app/common/base.controller';
 import { IConfigService } from '@app/config/config.service.interface';
-import { TRACE_TYPE, Trace } from '@app/decorators/trace';
-import { HttpError } from '@app/errors/http.error';
+import { ENV_VARS } from '@app/constants/environment';
+import { Trace } from '@app/decorators/trace';
+import { ConflictError } from '@app/errors/conflict.error';
 import { ILogger } from '@app/logger/logger.interface';
 import { AuthGuardMiddleware } from '@app/middlewares/auth.guard.middleware';
 import { CookiesGuardMiddleware } from '@app/middlewares/cookies.guard.middleware';
@@ -73,7 +74,7 @@ export class UserController extends BaseController implements IUserController {
         ]);
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async index(
         req: Request<{}, {}, UserRegisterDto>,
         res: Response,
@@ -87,7 +88,7 @@ export class UserController extends BaseController implements IUserController {
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async registration(
         req: Request<{}, {}, UserRegisterDto>,
         res: Response,
@@ -97,37 +98,36 @@ export class UserController extends BaseController implements IUserController {
             const newUser: User = await this.userService.registration(req.body);
 
             if (!newUser) {
-                const error = new HttpError(422, 'User exist', 'registration');
+                const error = new ConflictError({
+                    context: this.constructor.name,
+                });
 
                 next(error);
             }
 
-            await this.created(res, {
-                registration: 'successful',
-                id: newUser.id,
-            });
+            await this.created(res, { userId: newUser.id });
         } catch (error) {
             next(error);
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async login(
-        { body }: Request<{}, {}, UserLoginDto>,
+        req: Request<{}, {}, UserLoginDto>,
         res: Response,
         next: NextFunction,
     ): Promise<void> {
         try {
-            const email = body.email;
-            const password = body.password;
+            const { email, password } = req.body;
             const result = await this.userService.login({ email, password });
 
-            if (!result) next(new HttpError(401, 'Auth error', 'login'));
+            if (!result)
+                next(new ConflictError({ context: this.constructor.name }));
 
             const { accessToken, refreshToken } = result;
 
             const maxAge = Number(
-                this.configService.get('COOKIES_JWT_REFRESH_TOKEN_EXP'),
+                this.configService.get(ENV_VARS.COOKIES_JWT_REFRESH_TOKEN_EXP),
             );
             res.cookie('refreshToken', refreshToken, {
                 maxAge,
@@ -139,14 +139,12 @@ export class UserController extends BaseController implements IUserController {
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
-    async info(
-        { userId }: Request,
-        res: Response,
-        next: NextFunction,
-    ): Promise<void> {
+    @Trace()
+    async info(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const info: TUserInfo = await this.userService.getUserInfo(userId);
+            const info: TUserInfo = await this.userService.getUserInfo(
+                req.userId,
+            );
 
             const userEntity = new UserEntityFromModel(info.user);
 
@@ -156,7 +154,7 @@ export class UserController extends BaseController implements IUserController {
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async refresh(
         req: Request,
         res: Response,
@@ -167,7 +165,7 @@ export class UserController extends BaseController implements IUserController {
                 await this.userService.refresh(req.userId);
 
             const maxAge = Number(
-                this.configService.get('COOKIES_JWT_REFRESH_TOKEN_EXP'),
+                this.configService.get(ENV_VARS.COOKIES_JWT_REFRESH_TOKEN_EXP),
             );
             res.cookie('refreshToken', refreshToken, {
                 maxAge,
@@ -176,9 +174,6 @@ export class UserController extends BaseController implements IUserController {
 
             void this.ok(res, { accessToken });
         } catch (error) {
-            if (error instanceof Error) {
-                this.loggerService.error(error.message);
-            }
             next(error);
         }
     }

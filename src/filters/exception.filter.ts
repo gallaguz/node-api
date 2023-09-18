@@ -1,10 +1,12 @@
 import 'reflect-metadata';
-import Prisma from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-// Prisma
 
 import { APP_KEYS } from '@app/app-keys';
+import {
+    CLIENT_ERROR_CODES,
+    STATUS_CODES_MESSAGES_MAP,
+} from '@app/constants/status.codes';
 import { HttpError } from '@app/errors/http.error';
 import { IExceptionFilter } from '@app/filters/exception.filter.interface';
 import { ILogger } from '@app/logger/logger.interface';
@@ -23,15 +25,17 @@ export class ExceptionFilter implements IExceptionFilter {
         res: Response,
         next: NextFunction,
     ): void {
+        this.loggerService.error(JSON.stringify(err));
+
         if (err instanceof HttpError) {
             res.status(err.statusCode).send({
                 error: err.message,
                 status: err.statusCode,
             });
         } else {
-            this.loggerService.error(JSON.stringify(err));
-
-            res.status(500).send({ err: 'Something went wrong' });
+            res.status(CLIENT_ERROR_CODES.BAD_REQUEST).send({
+                err: STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR_CODES.BAD_REQUEST],
+            });
         }
         next();
     }

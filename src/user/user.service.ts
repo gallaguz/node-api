@@ -1,14 +1,19 @@
-import { User } from '@prisma/client';
+import { RefreshToken, User } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
 import { IConfigService } from '@app/config/config.service.interface';
 import {
-    CLIENT_ERROR,
+    CLIENT_ERROR_CODES,
     STATUS_CODES_MESSAGES_MAP,
 } from '@app/constants/status.codes';
-import { TRACE_TYPE, Trace } from '@app/decorators/trace';
+import { Trace } from '@app/decorators/trace';
+import { BadRequestError } from '@app/errors/bad-request.error';
+import { ConflictError } from '@app/errors/conflict.error';
 import { HttpError } from '@app/errors/http.error';
+import { NotFoundError } from '@app/errors/not-found.error';
+import { UnauthorizedError } from '@app/errors/unauthorized.error';
+import { UnprocessableEntityError } from '@app/errors/unprocessable-entity.error';
 import { ILogger } from '@app/logger/logger.interface';
 import { IPasswordService } from '@app/password/password.service.interface';
 import { ITokenService } from '@app/token/token.service.interface';
@@ -33,52 +38,40 @@ export class UserService implements IUserService {
         private passwordService: IPasswordService,
     ) {}
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async registration({
         name,
         email,
         password,
     }: UserRegisterDto): Promise<User> {
-        const existingUser: User | null =
-            await this.usersRepository.getUserByEmail(email);
+        const existedUser = await this.usersRepository.getUserByEmail(email);
 
-        if (existingUser) {
-            throw new HttpError(409, 'User exist');
+        if (existedUser) {
+            throw new ConflictError({ context: this.constructor.name });
         }
-
-        const userEntity: IUserEntity = new UserEntity(name, email);
-
-        const passwordHash = await this.passwordService.hash(password);
-
-        userEntity.setPassword(passwordHash);
-
         try {
+            const userEntity: IUserEntity = new UserEntity(name, email);
+
+            const passwordHash: string = await this.passwordService.hash(
+                password,
+            );
+
+            userEntity.setPassword(passwordHash);
+
             return this.usersRepository.create(userEntity);
         } catch (error) {
-            throw new HttpError(400, 'Cant create user');
+            throw new UnauthorizedError({
+                originalError: error,
+                context: this.constructor.name,
+            });
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async login(dto: UserLoginDto): Promise<TLoginReturnType> {
-        const existedUser: User | null =
-            await this.usersRepository.getUserByEmail(dto.email);
+        const existedUser: User = await this.getUserByEmailWithError(dto.email);
 
-        if (existedUser === null) {
-            throw new HttpError(CLIENT_ERROR.CONFLICT, 'User not found');
-        }
-
-        const validated = await this.passwordService.compare(
-            dto.password,
-            existedUser.password,
-        );
-
-        if (!validated) {
-            throw new HttpError(
-                CLIENT_ERROR.UNAUTHORIZED,
-                STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR.UNAUTHORIZED],
-            );
-        }
+        await this.passwordService.compare(dto.password, existedUser.password);
 
         const refreshToken: string = this.tokenService.generateRefreshToken(
             existedUser.id,
@@ -93,66 +86,55 @@ export class UserService implements IUserService {
         return { userId: existedUser.id, accessToken, refreshToken };
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async getUserInfo(userId: TUuid): Promise<TUserInfo> {
-        let user;
-        let tokens;
-
         try {
-            user = await this.usersRepository.getUserByUserId(userId);
-            tokens = await this.tokenService.findByUserId(userId);
+            const user: User = await this.getUserByIdWithError(userId);
+            const tokens: Array<RefreshToken> =
+                await this.tokenService.findByUserId(userId);
+            return { user, tokens };
         } catch (error) {
-            if (error instanceof Error) {
-                // StaticLogger.info('UserService: getUserInfo: err: ', error);
-            }
-
-            throw new HttpError(
-                CLIENT_ERROR.BAD_REQUEST,
-                STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR.BAD_REQUEST],
-            );
+            throw new BadRequestError({
+                originalError: error,
+                context: this.constructor.name,
+            });
         }
-
-        if (!user) {
-            throw new HttpError(
-                CLIENT_ERROR.NOT_FOUND,
-                STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR.NOT_FOUND],
-            );
-        }
-
-        return { user, tokens };
     }
 
     // async activate(activationLink) {}
 
     // async logout(email, password) {}
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     async refresh(userId: TUuid): Promise<TTokens> {
-        await this.getUserByIdWithError(userId);
-
         try {
+            await this.getUserByIdWithError(userId);
             return this.tokenService.refresh(userId);
         } catch (error) {
-            if (error instanceof Error) {
-                this.loggerService.error(error.message);
-            }
-
-            throw new HttpError(
-                CLIENT_ERROR.UNAUTHORIZED,
-                STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR.UNAUTHORIZED],
-            );
+            throw new UnauthorizedError({
+                context: this.constructor.name,
+                originalError: error,
+            });
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     public async getUserByIdWithError(userId: TUuid): Promise<User> {
         const existingUser = await this.usersRepository.getUserByUserId(userId);
 
         if (!existingUser) {
-            throw new HttpError(
-                CLIENT_ERROR.NOT_FOUND,
-                STATUS_CODES_MESSAGES_MAP[CLIENT_ERROR.NOT_FOUND],
-            );
+            throw new NotFoundError({ context: this.constructor.name });
+        }
+
+        return existingUser;
+    }
+
+    @Trace()
+    public async getUserByEmailWithError(email: string): Promise<User> {
+        const existingUser = await this.usersRepository.getUserByEmail(email);
+
+        if (!existingUser) {
+            throw new NotFoundError({ context: this.constructor.name });
         }
 
         return existingUser;

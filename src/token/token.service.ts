@@ -4,7 +4,8 @@ import { Algorithm } from 'jsonwebtoken';
 
 import { APP_KEYS } from '@app/app-keys';
 import { IConfigService } from '@app/config/config.service.interface';
-import { TRACE_TYPE, Trace } from '@app/decorators/trace';
+import { ENV_VARS } from '@app/constants/environment';
+import { Trace } from '@app/decorators/trace';
 import { ILogger } from '@app/logger/logger.interface';
 import { TokenEntity } from '@app/token/token.entity';
 import { ITokenEntity } from '@app/token/token.entity.interface';
@@ -32,18 +33,24 @@ export class TokenService implements ITokenService {
         @inject(APP_KEYS.TokenRepository)
         private tokenRepository: ITokenRepository,
     ) {
-        this.accessTokenSecret = this.configService.get('JWT_ACCESS_SECRET');
+        this.accessTokenSecret = this.configService.get(
+            ENV_VARS.JWT_ACCESS_SECRET,
+        );
         this.accessTokenExpiresIn = this.configService.get(
-            'JWT_ACCESS_EXPIRES_IN',
+            ENV_VARS.JWT_ACCESS_EXPIRES_IN,
         );
-        this.refreshTokenSecret = this.configService.get('JWT_REFRESH_SECRET');
+        this.refreshTokenSecret = this.configService.get(
+            ENV_VARS.JWT_REFRESH_SECRET,
+        );
         this.refreshTokenExpiresIn = this.configService.get(
-            'JWT_REFRESH_EXPIRES_IN',
+            ENV_VARS.JWT_REFRESH_EXPIRES_IN,
         );
-        this.algorithm = <Algorithm>this.configService.get('JWT_ALGORITHM');
+        this.algorithm = <Algorithm>(
+            this.configService.get(ENV_VARS.JWT_ALGORITHM)
+        );
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     public async refresh(userId: TUuid): Promise<TTokens> {
         const accessToken = await this.generateAccessToken(userId);
         const refreshToken = await this.generateRefreshToken(userId);
@@ -56,7 +63,7 @@ export class TokenService implements ITokenService {
         };
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
     public async saveRefreshToken(
         refreshToken: TRefreshToken,
     ): Promise<RefreshToken> {
@@ -67,7 +74,7 @@ export class TokenService implements ITokenService {
         return this.tokenRepository.create(refreshToken, decoded);
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public generateToken(
         userId: TUuid,
         secret: string,
@@ -78,7 +85,7 @@ export class TokenService implements ITokenService {
         return tokenEntity.sign(userId, exp, this.algorithm);
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public validateToken(
         token: TAccessToken | TRefreshToken,
         secret: string,
@@ -87,7 +94,7 @@ export class TokenService implements ITokenService {
         return tokenEntity.verify(token);
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public generateRefreshToken(userId: TUuid): TRefreshToken {
         return this.generateToken(
             userId,
@@ -96,7 +103,7 @@ export class TokenService implements ITokenService {
         );
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public generateAccessToken(userId: TUuid): TAccessToken {
         return this.generateToken(
             userId,
@@ -105,17 +112,17 @@ export class TokenService implements ITokenService {
         );
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public validateRefreshToken(token: TRefreshToken): TTokenDecoded {
         return this.validateToken(token, this.refreshTokenSecret);
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public validateAccessToken(token: TAccessToken): TTokenDecoded {
         return this.validateToken(token, this.accessTokenSecret);
     }
 
-    @Trace(TRACE_TYPE.SYNC)
+    @Trace()
     public async findByUserId(userId: TUuid): Promise<Array<RefreshToken>> {
         return this.tokenRepository.findByUserId(userId);
     }

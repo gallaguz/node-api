@@ -8,8 +8,8 @@ import {
     IRouteInterface,
 } from '@app/common/base.controller.interface';
 import {
-    CLIENT_ERROR,
-    SUCCESS,
+    CLIENT_ERROR_CODES,
+    SUCCESS_CODES,
     TStatusCodes,
 } from '@app/constants/status.codes';
 import { ILogger } from '@app/logger/logger.interface';
@@ -48,7 +48,11 @@ export abstract class BaseController implements IBaseController {
     }
 
     public ok<TMessage>(res: Response, message: TMessage): ExpressReturnType {
-        return this.responseWithPayload<TMessage>(res, SUCCESS.OK, message);
+        return this.responseWithPayload<TMessage>(
+            res,
+            SUCCESS_CODES.OK,
+            message,
+        );
     }
 
     public created<TMessage>(
@@ -57,7 +61,7 @@ export abstract class BaseController implements IBaseController {
     ): ExpressReturnType {
         return this.responseWithPayload<TMessage>(
             res,
-            SUCCESS.CREATED,
+            SUCCESS_CODES.CREATED,
             message,
         );
     }
@@ -69,7 +73,7 @@ export abstract class BaseController implements IBaseController {
     ): Promise<ExpressReturnType> {
         return this.responseWithPayload<TMessage>(
             res,
-            CLIENT_ERROR.CONFLICT,
+            CLIENT_ERROR_CODES.CONFLICT,
             message,
         );
     }

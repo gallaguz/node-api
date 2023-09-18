@@ -10,7 +10,8 @@ import { inject, injectable } from 'inversify';
 import morgan from 'morgan';
 
 import { APP_KEYS } from '@app/app-keys';
-import { APP_ENV, IConfigService } from '@app/config/config.service.interface';
+import { IConfigService } from '@app/config/config.service.interface';
+import { APP_ENV, ENV_VARS } from '@app/constants/environment';
 import { PrismaService } from '@app/database/prisma.service';
 import { IExceptionFilter } from '@app/filters/exception.filter.interface';
 import { ILogger } from '@app/logger/logger.interface';
@@ -35,7 +36,7 @@ export class App {
         @inject(APP_KEYS.TokenService) private tokenService: ITokenService,
     ) {
         this.app = express();
-        this.port = Number(this.configService.get('API_PORT'));
+        this.port = Number(this.configService.get(ENV_VARS.API_PORT));
     }
 
     useMiddleware(): void {

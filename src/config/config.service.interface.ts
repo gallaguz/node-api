@@ -1,12 +1,6 @@
-export enum APP_ENV {
-    LOCAL = 'local',
-    DEVELOPMENT = 'development',
-    STAGING = 'staging',
-    PRODUCTION = 'production',
-    TESTING = 'testing',
-}
+import { APP_ENV, ENV_VARS } from '@app/constants/environment';
 
 export interface IConfigService {
     appEnv: APP_ENV;
-    get(key: string): string;
+    get(key: ENV_VARS): string;
 }

@@ -1,66 +1,65 @@
-version: '3.1'
+version: "3.1"
 
 services:
-  node_api_development:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.development
-    command: ["node", "-r", "module-alias/register", "./dist/main.js"]
-    container_name: node_api_development
-    restart: always
-    env_file:
-      - .environment/.development.env
-    ports:
-      - 8000:8000
-    depends_on:
-      - node_api_postgres_development
-    volumes:
-      - ./:/usr/src/app
-    networks:
-      - node_api_development_network
+    node_api_development:
+        build:
+            context: .
+            dockerfile: ./docker/Dockerfile.development
+        command: ["node", "-r", "module-alias/register", "./dist/main.js"]
+        container_name: node_api_development
+        restart: always
+        env_file:
+            - .environment/.development.env
+        ports:
+            - 8000:8000
+        depends_on:
+            - node_api_postgres_development
+        volumes:
+            - ./:/usr/src/app
+        networks:
+            - node_api_development_network
 
-  node_api_postgres_development:
-    image: postgres:13.3-alpine
-    container_name: node_api_postgres_development
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    logging:
-      options:
-        max-size: 10m
-        max-file: "3"
-    ports:
-      - 5432:5432
-    expose:
-      - 5432
-    volumes:
-      - pgdata_development:/var/lib/postgresql/data
-    networks:
-      - node_api_development_network
+    node_api_postgres_development:
+        image: postgres:13.3-alpine
+        container_name: node_api_postgres_development
+        restart: always
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+        ports:
+            - 5432:5432
+        expose:
+            - 5432
+        volumes:
+            - pgdata_development:/var/lib/postgresql/data
+        networks:
+            - node_api_development_network
 
-  node_api_rmq_development:
-    image: rabbitmq:3-management
-    container_name: node_api_rmq_development
-    restart: always
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-    ports:
-      - 15672:15672
-      - 5672:5672
-    volumes:
-      - rabbitmq_data_development:/var/lib/rabbitmq
-      - rabbitmq_log_development:/var/log/rabbitmq
-    networks:
-      - node_api_development_network
+    node_api_rmq_development:
+        image: rabbitmq:3-management
+        container_name: node_api_rmq_development
+        restart: always
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+        ports:
+            - 15672:15672
+            - 5672:5672
+        volumes:
+            - rabbitmq_data_development:/var/lib/rabbitmq
+            - rabbitmq_log_development:/var/log/rabbitmq
+        networks:
+            - node_api_development_network
 
 networks:
     node_api_development_network:
 
 volumes:
-  pgdata_development:
-  rabbitmq_data_development:
-  rabbitmq_log_development:
-
+    pgdata_development:
+    rabbitmq_data_development:
+    rabbitmq_log_development:

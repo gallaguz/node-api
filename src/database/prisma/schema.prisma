@@ -1,25 +1,24 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["metrics"]
-  target   = "debian-openssl-1.1.x" // Your existing target
-  binaryTargets = ["linux-musl-openssl-3.0.x"] // Add this line
+  target   = "debian-openssl-1.1.x"
+  binaryTargets = ["linux-musl-openssl-3.0.x"]
 }
-
-//generator class_validator {
-//  provider = "prisma-class-validator-generator"
-//  output   = "../src/prisma.models"
-//}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+//
+// Add Access Key for multiply hosts
+//
+
 model User {
   // Fields
   id    String @unique @default(uuid())
   name  String
-  email String
+  email String @unique
 
   password String
 

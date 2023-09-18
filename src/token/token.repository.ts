@@ -4,7 +4,8 @@ import { inject, injectable } from 'inversify';
 import { APP_KEYS } from '@app/app-keys';
 import { IConfigService } from '@app/config/config.service.interface';
 import { PrismaService } from '@app/database/prisma.service';
-import { TRACE_TYPE, Trace } from '@app/decorators/trace';
+import { CatchPrismaError } from '@app/decorators/catch-prisma-error';
+import { Trace } from '@app/decorators/trace';
 import { ILogger } from '@app/logger/logger.interface';
 import { TRefreshToken, TTokenDecoded, TUuid } from '@app/token/token.types';
 
@@ -16,7 +17,8 @@ export class TokenRepository {
         @inject(APP_KEYS.PrismaService) private prismaService: PrismaService,
     ) {}
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
+    @CatchPrismaError()
     public async create(
         token: TRefreshToken,
         { userId, exp }: TTokenDecoded,
@@ -28,13 +30,15 @@ export class TokenRepository {
             return this.prismaService.client.refreshToken.create(data);
         } catch (error) {
             if (error instanceof Error) {
+                // TODO
                 this.loggerService.error(error.message);
             }
             throw error;
         }
     }
 
-    @Trace(TRACE_TYPE.ASYNC)
+    @Trace()
+    @CatchPrismaError()
     public async findByUserId(userId: TUuid): Promise<Array<RefreshToken>> {
         const where = { user_id: userId, is_active: true };
 
