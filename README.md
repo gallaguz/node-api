@@ -11,25 +11,25 @@ JWT authorization on Express and InversifyJS to control dependency inversion.
 .environment
 
 # for local development
-npm run init:local
+npm run local:init
 
 # start detached
-npm run start:local
+npm run local:start
 
 # start detached with logs
-npm run start:local:logs
+npm run local:start:logs
 
 # stop
-npm run stop:local
+npm run local:stop
 
 # building for local development
-npm run build:local
+npm run local:build
 
 # apply migrations
-npm run migrate:local
+npm run local:migrate
 
 # seed some mocks
-npm run seed:local
+npm run local:seed
 
 
 # other environments same)))
