@@ -12,6 +12,7 @@ services:
                 'ts,json',
                 '--exec',
                 'node',
+                '--inspect=0.0.0.0:9222',
                 '-r',
                 'ts-node/register',
                 '-r',
@@ -24,6 +25,14 @@ services:
             - .environment/.local.env
         ports:
             - '8000:8000'
+            - '9222:9222'
+            - '9223:9223'
+            - '9224:9224'
+            - '9225:9225'
+            - '9226:9226'
+            - '9227:9227'
+            - '9228:9228'
+            - '9229:9229'
         depends_on:
             - node_api_postgres_local
         volumes:
