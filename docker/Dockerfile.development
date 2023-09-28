@@ -1,4 +1,4 @@
-FROM node:18-alpine AS prepare
+FROM node:18.12.1 AS prepare
 
 WORKDIR /usr/src/app
 
@@ -6,13 +6,13 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY ./src ./src
 
-RUN npm install -g npm@10.1.0 typescript
+RUN npm install -g typescript
 
 FROM prepare AS builder
 
 RUN npm ci && tsc
 
-FROM node:18-alpine as development
+FROM node:18.12.1 as development
 
 WORKDIR /app
 
