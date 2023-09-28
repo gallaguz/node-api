@@ -1,15 +1,29 @@
 import 'reflect-metadata';
 import { faker } from '@faker-js/faker';
+import { Container } from 'inversify';
 import request from 'supertest';
 
 import { App } from '@app/app';
 import { APP_KEYS } from '@app/app-keys';
-import { appContainer } from '@app/main';
+import { ILogger } from '@app/logger/logger.interface';
+import { PASSWORD_CONTAINER } from '@app/password/password.container';
+import { ROOT_CONTAINER } from '@app/root.container';
+import { TOKEN_CONTAINER } from '@app/token/token.container';
+import { USER_CONTAINER } from '@app/user/user.container';
 
 let app: App;
+let loggerService: ILogger;
 
 beforeAll(async (): Promise<void> => {
+    const appContainer: Container = new Container();
+    appContainer.load(ROOT_CONTAINER);
+    appContainer.load(USER_CONTAINER);
+    appContainer.load(TOKEN_CONTAINER);
+    appContainer.load(PASSWORD_CONTAINER);
+
     app = appContainer.get<App>(APP_KEYS.Application);
+    loggerService = appContainer.get<ILogger>(APP_KEYS.LoggerService);
+
     await app.init();
 });
 
