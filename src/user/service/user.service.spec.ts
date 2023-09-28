@@ -2,19 +2,24 @@
 // import { User } from '@prisma/client';
 // import { Container } from 'inversify';
 //
-// import { IConfigService } from '../config/config.service.interface';
-// import { TYPES } from '../types';
-// import { UserModel } from './user.model';
-// import { IUserRepository } from './user.repository.interface';
-// import { UserService } from './user.service';
-// import { IUserService } from './user.service.interface';
+// import { APP_KEYS } from '@app/app-keys';
+// import { IConfigService } from '@app/config';
+// import { APP_ENV } from '@app/constants';
+// import {
+//     IUserEntity,
+//     IUserRepository,
+//     IUserService,
+//     UserService,
+// } from '@app/user';
 //
 // const ConfigServiceMock: IConfigService = {
+//     appEnv: APP_ENV.TESTING,
 //     get: jest.fn(),
 // };
 //
 // const UsersRepositoryMock: IUserRepository = {
-//     getUserWithPayload: jest.fn(),
+//     getUserByEmail: jest.fn(),
+//     getUserByUserId: jest.fn(),
 //     create: jest.fn(),
 // };
 //
@@ -24,30 +29,29 @@
 // let usersService: IUserService;
 //
 // beforeAll(() => {
-//     container.bind<IUserService>(TYPES.UserService).to(UserService);
+//     container.bind<IUserService>(APP_KEYS.UserService).to(UserService);
 //     container
-//         .bind<IConfigService>(TYPES.ConfigService)
+//         .bind<IConfigService>(APP_KEYS.ConfigService)
 //         .toConstantValue(ConfigServiceMock);
 //     container
-//         .bind<IUserRepository>(TYPES.UserRepository)
+//         .bind<IUserRepository>(APP_KEYS.UserRepository)
 //         .toConstantValue(UsersRepositoryMock);
 //
-//     usersService = container.get<IUserService>(TYPES.UserService);
-//     configService = container.get<IConfigService>(TYPES.ConfigService);
-//     usersRepository = container.get<IUserRepository>(TYPES.UserRepository);
+//     usersService = container.get<IUserService>(APP_KEYS.UserService);
+//     configService = container.get<IConfigService>(APP_KEYS.ConfigService);
+//     usersRepository = container.get<IUserRepository>(APP_KEYS.UserRepository);
 // });
 //
-// let createdUser: UserModel | null;
+// let createdUser: User | null;
 //
 // describe('User Service', () => {
 //     it('CreateUser', async () => {
 //         configService.get = jest.fn().mockReturnValueOnce(10);
 //         usersRepository.create = jest.fn().mockImplementationOnce(
-//             (user: UserModel): UserModel => ({
+//             (user: IUserEntity): IUserEntity => ({
 //                 name: user.name,
 //                 email: user.email,
 //                 password: user.password,
-//                 id: 1,
 //             }),
 //         );
 //

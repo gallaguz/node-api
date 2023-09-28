@@ -2,13 +2,10 @@ import { ContainerModule, interfaces } from 'inversify';
 
 import { App } from '@app/app';
 import { APP_KEYS } from '@app/app-keys';
-import { ConfigService } from '@app/config/config.service';
-import { IConfigService } from '@app/config/config.service.interface';
-import { PrismaService } from '@app/database/prisma.service';
-import { ExceptionFilter } from '@app/filters/exception.filter';
-import { IExceptionFilter } from '@app/filters/exception.filter.interface';
-import { ILogger } from '@app/logger/logger.interface';
-import { LoggerService } from '@app/logger/logger.service';
+import { ConfigService, IConfigService } from '@app/config';
+import { PrismaService } from '@app/database';
+import { ExceptionFilter, IExceptionFilter } from '@app/filters';
+import { ILogger, LoggerService } from '@app/logger';
 
 const ROOT_CONTAINER = new ContainerModule((bind: interfaces.Bind) => {
     // LOGGER

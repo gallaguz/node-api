@@ -3,8 +3,9 @@ import * as process from 'process';
 import { injectable } from 'inversify';
 import * as winston from 'winston';
 
-import { LOG_COLOURS, LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
-import { ILogger } from '@app/logger/logger.interface';
+import { LOG_COLOURS, LOG_LEVELS, LOG_LEVELS_MAP } from '@app/constants';
+
+import { ILogger } from './logger.interface';
 // const logFileName = 'logs/error.log';
 //
 // function level(): string {

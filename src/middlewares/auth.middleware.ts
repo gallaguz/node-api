@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { IConfigService } from '@app/config/config.service.interface';
-import { ENV_VARS } from '@app/constants/environment';
-import { ILogger } from '@app/logger/logger.interface';
-import { IMiddleware } from '@app/middlewares/middleware.interface';
-import { ITokenService } from '@app/token/token.service.interface';
+import { IConfigService } from '@app/config';
+import { ENV_VARS } from '@app/constants';
+import { ILogger } from '@app/logger';
+import { ITokenService } from '@app/token';
+
+import { IMiddleware } from './middleware.interface';
 
 export class AuthMiddleware implements IMiddleware {
     private readonly secret: string;

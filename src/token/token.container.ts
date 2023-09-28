@@ -1,10 +1,12 @@
 import { ContainerModule, interfaces } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { TokenRepository } from '@app/token/token.repository';
-import { ITokenRepository } from '@app/token/token.repository.interface';
-import { TokenService } from '@app/token/token.service';
-import { ITokenService } from '@app/token/token.service.interface';
+import {
+    ITokenService,
+    TokenService,
+    ITokenRepository,
+    TokenRepository,
+} from '@app/token';
 
 const TOKEN_CONTAINER = new ContainerModule((bind: interfaces.Bind) => {
     bind<ITokenService>(APP_KEYS.TokenService).to(TokenService);

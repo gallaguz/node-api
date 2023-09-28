@@ -5,22 +5,26 @@ import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { BaseController } from '@app/common/base.controller';
-import { IConfigService } from '@app/config/config.service.interface';
-import { ENV_VARS } from '@app/constants/environment';
-import { Trace } from '@app/decorators/trace';
-import { ConflictError } from '@app/errors/conflict.error';
-import { ILogger } from '@app/logger/logger.interface';
-import { AuthGuardMiddleware } from '@app/middlewares/auth.guard.middleware';
-import { CookiesGuardMiddleware } from '@app/middlewares/cookies.guard.middleware';
-import { ValidateMiddleware } from '@app/middlewares/validate.middleware';
-import { ITokenService } from '@app/token/token.service.interface';
-import { IUserController } from '@app/user/user.controller.interface';
-import { UserEntityFromModel } from '@app/user/user.entity';
-import { UserLoginDto } from '@app/user/user.login.dto';
-import { UserRegisterDto } from '@app/user/user.register.dto';
-import { IUserService } from '@app/user/user.service.interface';
-import { TUserInfo } from '@app/user/user.types';
+import { BaseController } from '@app/common';
+import { IConfigService } from '@app/config';
+import { ENV_VARS } from '@app/constants';
+import { Trace } from '@app/decorators';
+import { ConflictError } from '@app/errors';
+import { ILogger } from '@app/logger';
+import {
+    AuthGuardMiddleware,
+    CookiesGuardMiddleware,
+    ValidateMiddleware,
+} from '@app/middlewares';
+import { ITokenService } from '@app/token';
+import {
+    IUserController,
+    IUserService,
+    TUserInfo,
+    UserEntityFromModel,
+    UserLoginDto,
+    UserRegisterDto,
+} from '@app/user';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {

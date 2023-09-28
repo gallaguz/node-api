@@ -1,11 +1,6 @@
 import { Algorithm } from 'jsonwebtoken';
 
-import {
-    TAccessToken,
-    TRefreshToken,
-    TTokenDecoded,
-    TUuid,
-} from '@app/token/token.types';
+import { TAccessToken, TRefreshToken, TTokenDecoded, TUuid } from '@app/token';
 
 export interface ITokenEntity {
     sign(

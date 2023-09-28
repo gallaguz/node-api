@@ -10,14 +10,14 @@ import { inject, injectable } from 'inversify';
 import morgan from 'morgan';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
-import { APP_ENV, ENV_VARS } from '@app/constants/environment';
-import { PrismaService } from '@app/database/prisma.service';
-import { IExceptionFilter } from '@app/filters/exception.filter.interface';
-import { ILogger } from '@app/logger/logger.interface';
-import { AuthMiddleware } from '@app/middlewares/auth.middleware';
-import { ITokenService } from '@app/token/token.service.interface';
-import { IUserController } from '@app/user/user.controller.interface';
+import { IConfigService } from '@app/config';
+import { APP_ENV, ENV_VARS } from '@app/constants';
+import { PrismaService } from '@app/database';
+import { IExceptionFilter } from '@app/filters';
+import { ILogger } from '@app/logger';
+import { AuthMiddleware } from '@app/middlewares';
+import { ITokenService } from '@app/token';
+import { IUserController } from '@app/user';
 
 @injectable()
 export class App {

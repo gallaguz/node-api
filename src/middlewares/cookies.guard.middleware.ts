@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { ILogger } from '@app/logger/logger.interface';
-import { IMiddleware } from '@app/middlewares/middleware.interface';
-import { ITokenService } from '@app/token/token.service.interface';
-import { TTokenDecoded } from '@app/token/token.types';
+import { ILogger } from '@app/logger';
+import { ITokenService, TTokenDecoded } from '@app/token';
+
+import { IMiddleware } from './middleware.interface';
 
 export class CookiesGuardMiddleware implements IMiddleware {
     constructor(

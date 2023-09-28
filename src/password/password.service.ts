@@ -2,12 +2,12 @@ import { compare, hash } from 'bcryptjs';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
-import { ENV_VARS } from '@app/constants/environment';
-import { Trace } from '@app/decorators/trace';
-import { UnauthorizedError } from '@app/errors/unauthorized.error';
-import { ILogger } from '@app/logger/logger.interface';
-import { IPasswordService } from '@app/password/password.service.interface';
+import { IConfigService } from '@app/config';
+import { ENV_VARS } from '@app/constants';
+import { Trace } from '@app/decorators';
+import { UnauthorizedError } from '@app/errors';
+import { ILogger } from '@app/logger';
+import { IPasswordService } from '@app/password';
 
 @injectable()
 export class PasswordService implements IPasswordService {

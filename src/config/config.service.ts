@@ -3,9 +3,10 @@ import * as process from 'process';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
-import { APP_ENV, ENV_VARS } from '@app/constants/environment';
-import { ILogger } from '@app/logger/logger.interface';
+import { APP_ENV, ENV_VARS } from '@app/constants';
+import { ILogger } from '@app/logger';
+
+import { IConfigService } from './config.service.interface';
 
 @injectable()
 export class ConfigService implements IConfigService {
@@ -14,7 +15,7 @@ export class ConfigService implements IConfigService {
     constructor(@inject(APP_KEYS.LoggerService) private logger: ILogger) {
         this.appEnv = this.init();
 
-        this.logger.info(`[${this.constructor.name}] env loaded`);
+        this.logger.info(`[ ${this.constructor.name} ] env loaded`);
     }
     private init(): APP_ENV {
         const appEnv: string | undefined = process.env.APP_ENV;

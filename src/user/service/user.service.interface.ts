@@ -1,9 +1,12 @@
 import { User } from '@prisma/client';
 
-import { TRefreshToken, TTokens, TUuid } from '@app/token/token.types';
-import { UserLoginDto } from '@app/user/user.login.dto';
-import { UserRegisterDto } from '@app/user/user.register.dto';
-import { TLoginReturnType, TUserInfo } from '@app/user/user.types';
+import { TRefreshToken, TTokens, TUuid } from '@app/token';
+import {
+    TLoginReturnType,
+    TUserInfo,
+    UserLoginDto,
+    UserRegisterDto,
+} from '@app/user';
 
 export interface IUserService {
     registration(dto: UserRegisterDto): Promise<User>;

@@ -2,8 +2,9 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { NextFunction, Request, Response } from 'express';
 
-import { ILogger } from '@app/logger/logger.interface';
-import { IMiddleware } from '@app/middlewares/middleware.interface';
+import { ILogger } from '@app/logger';
+
+import { IMiddleware } from './middleware.interface';
 
 export class ValidateMiddleware implements IMiddleware {
     constructor(

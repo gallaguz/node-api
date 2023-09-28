@@ -3,21 +3,21 @@ import { inject, injectable } from 'inversify';
 import { Algorithm } from 'jsonwebtoken';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
-import { ENV_VARS } from '@app/constants/environment';
-import { Trace } from '@app/decorators/trace';
-import { ILogger } from '@app/logger/logger.interface';
-import { TokenEntity } from '@app/token/token.entity';
-import { ITokenEntity } from '@app/token/token.entity.interface';
-import { ITokenRepository } from '@app/token/token.repository.interface';
-import { ITokenService } from '@app/token/token.service.interface';
+import { IConfigService } from '@app/config';
+import { ENV_VARS } from '@app/constants';
+import { Trace } from '@app/decorators';
+import { ILogger } from '@app/logger';
 import {
+    ITokenEntity,
+    ITokenRepository,
+    ITokenService,
     TAccessToken,
+    TokenEntity,
     TRefreshToken,
     TTokenDecoded,
     TTokens,
     TUuid,
-} from '@app/token/token.types';
+} from '@app/token';
 
 @injectable()
 export class TokenService implements ITokenService {

@@ -2,29 +2,27 @@ import { RefreshToken, User } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
+import { IConfigService } from '@app/config';
+import { Trace } from '@app/decorators';
 import {
-    CLIENT_ERROR_CODES,
-    STATUS_CODES_MESSAGES_MAP,
-} from '@app/constants/status.codes';
-import { Trace } from '@app/decorators/trace';
-import { BadRequestError } from '@app/errors/bad-request.error';
-import { ConflictError } from '@app/errors/conflict.error';
-import { HttpError } from '@app/errors/http.error';
-import { NotFoundError } from '@app/errors/not-found.error';
-import { UnauthorizedError } from '@app/errors/unauthorized.error';
-import { UnprocessableEntityError } from '@app/errors/unprocessable-entity.error';
-import { ILogger } from '@app/logger/logger.interface';
-import { IPasswordService } from '@app/password/password.service.interface';
-import { ITokenService } from '@app/token/token.service.interface';
-import { TTokens, TUuid } from '@app/token/token.types';
-import { UserEntity } from '@app/user/user.entity';
-import { IUserEntity } from '@app/user/user.entity.interface';
-import { UserLoginDto } from '@app/user/user.login.dto';
-import { UserRegisterDto } from '@app/user/user.register.dto';
-import { IUserRepository } from '@app/user/user.repository.interface';
-import { IUserService } from '@app/user/user.service.interface';
-import { TLoginReturnType, TUserInfo } from '@app/user/user.types';
+    BadRequestError,
+    ConflictError,
+    NotFoundError,
+    UnauthorizedError,
+} from '@app/errors';
+import { ILogger } from '@app/logger';
+import { IPasswordService } from '@app/password';
+import { ITokenService, TTokens, TUuid } from '@app/token';
+import {
+    IUserEntity,
+    IUserRepository,
+    IUserService,
+    TLoginReturnType,
+    TUserInfo,
+    UserEntity,
+    UserLoginDto,
+    UserRegisterDto,
+} from '@app/user';
 
 @injectable()
 export class UserService implements IUserService {
@@ -134,7 +132,10 @@ export class UserService implements IUserService {
         const existingUser = await this.usersRepository.getUserByEmail(email);
 
         if (!existingUser) {
-            throw new NotFoundError({ context: this.constructor.name });
+            throw new NotFoundError({
+                context: this.constructor.name,
+                message: 'User not found',
+            });
         }
 
         return existingUser;

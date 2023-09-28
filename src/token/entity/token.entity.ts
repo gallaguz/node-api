@@ -1,13 +1,13 @@
 import { sign, verify, SignOptions, Algorithm } from 'jsonwebtoken';
 
-import { Trace } from '@app/decorators/trace';
-import { ITokenEntity } from '@app/token/token.entity.interface';
+import { Trace } from '@app/decorators';
 import {
     TAccessToken,
     TRefreshToken,
     TTokenDecoded,
     TUuid,
-} from '@app/token/token.types';
+    ITokenEntity,
+} from '@app/token';
 
 export class TokenEntity implements ITokenEntity {
     constructor(private readonly _secret: string) {}

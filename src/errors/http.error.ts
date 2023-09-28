@@ -1,7 +1,4 @@
-import {
-    CLIENT_ERROR_CODES,
-    STATUS_CODES_MESSAGES_MAP,
-} from '@app/constants/status.codes';
+import { CLIENT_ERROR_CODES, STATUS_CODES_MESSAGES_MAP } from '@app/constants';
 
 export type THttpErrorInput = {
     statusCode?: number;
@@ -9,6 +6,7 @@ export type THttpErrorInput = {
     context?: string;
     originalError?: unknown;
 };
+
 export class HttpError extends Error {
     statusCode: number;
     message: string;

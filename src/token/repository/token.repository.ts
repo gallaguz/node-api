@@ -2,12 +2,11 @@ import { RefreshToken } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { IConfigService } from '@app/config/config.service.interface';
-import { PrismaService } from '@app/database/prisma.service';
-import { CatchPrismaError } from '@app/decorators/catch-prisma-error';
-import { Trace } from '@app/decorators/trace';
-import { ILogger } from '@app/logger/logger.interface';
-import { TRefreshToken, TTokenDecoded, TUuid } from '@app/token/token.types';
+import { IConfigService } from '@app/config';
+import { PrismaService } from '@app/database';
+import { CatchPrismaError, Trace } from '@app/decorators';
+import { ILogger } from '@app/logger';
+import { TRefreshToken, TTokenDecoded, TUuid } from '@app/token';
 
 @injectable()
 export class TokenRepository {

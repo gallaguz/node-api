@@ -1,8 +1,8 @@
 import { User } from '@prisma/client';
 import { compare, hash } from 'bcryptjs';
 
-import { Trace } from '@app/decorators/trace';
-import { IUserEntity } from '@app/user/user.entity.interface';
+import { Trace } from '@app/decorators';
+import { IUserEntity } from '@app/user';
 
 export class UserEntity implements IUserEntity {
     model: User;

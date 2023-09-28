@@ -1,8 +1,11 @@
 import { IsEmail, IsString } from 'class-validator';
 
-import { WRONG_EMAIL, WRONG_PASSWORD } from '@app/constants/errors';
+import { WRONG_EMAIL, WRONG_NAME, WRONG_PASSWORD } from '@app/constants';
 
-export class UserLoginDto {
+export class UserRegisterDto {
+    @IsString({ message: WRONG_NAME })
+    name: string;
+
     @IsEmail({}, { message: WRONG_EMAIL })
     email: string;
 

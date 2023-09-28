@@ -3,16 +3,17 @@ import { Response, Router } from 'express';
 import { injectable } from 'inversify';
 
 import {
-    ExpressReturnType,
-    IBaseController,
-    IRouteInterface,
-} from '@app/common/base.controller.interface';
-import {
     CLIENT_ERROR_CODES,
     SUCCESS_CODES,
     TStatusCodes,
-} from '@app/constants/status.codes';
-import { ILogger } from '@app/logger/logger.interface';
+} from '@app/constants';
+import { ILogger } from '@app/logger';
+
+import {
+    ExpressReturnType,
+    IBaseController,
+    IRouteInterface,
+} from './base.controller.interface';
 
 @injectable()
 export abstract class BaseController implements IBaseController {

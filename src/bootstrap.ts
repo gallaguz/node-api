@@ -6,11 +6,11 @@ import { Container } from 'inversify';
 
 import { App } from '@app/app';
 import { APP_KEYS } from '@app/app-keys';
-import { ILogger } from '@app/logger/logger.interface';
-import { PASSWORD_CONTAINER } from '@app/password/password.container';
+import { ILogger } from '@app/logger';
+import { PASSWORD_CONTAINER } from '@app/password';
 import { ROOT_CONTAINER } from '@app/root.container';
-import { TOKEN_CONTAINER } from '@app/token/token.container';
-import { USER_CONTAINER } from '@app/user/user.container';
+import { TOKEN_CONTAINER } from '@app/token';
+import { USER_CONTAINER } from '@app/user';
 
 export async function bootstrap(): Promise<void> {
     const appContainer: Container = new Container();
@@ -25,7 +25,7 @@ export async function bootstrap(): Promise<void> {
     await app
         .init()
         .then(() => {
-            loggerService.info(`Initiation success`);
+            loggerService.info(`[ APP ] Initiation success`);
         })
         .catch((error: unknown): void => {
             if (error instanceof Error) {
@@ -33,6 +33,6 @@ export async function bootstrap(): Promise<void> {
             }
         })
         .finally(() => {
-            loggerService.debug(process.pid);
+            loggerService.debug(`[ PID ] ${process.pid}`);
         });
 }

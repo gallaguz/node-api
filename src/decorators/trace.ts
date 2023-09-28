@@ -1,6 +1,6 @@
 import * as process from 'process';
 
-import { LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
+import { LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger';
 
 type TLabel = {
     constructorName: string;
