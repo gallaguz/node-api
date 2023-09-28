@@ -1,8 +1,6 @@
 import * as process from 'process';
-import * as util from 'util';
 
 import { LOG_LEVELS, LOG_LEVELS_MAP } from '@app/logger/config';
-import { loggerService } from '@app/main';
 
 type TLabel = {
     constructorName: string;
@@ -23,7 +21,7 @@ const labelConstructor = (
 };
 
 const messageConstructor = (start: Date, end: Date, label: TLabel): void => {
-    loggerService.trace(
+    console.trace(
         `${end.getTime() - start.getTime()} - ms ${label.constructorName}-${
             label.methodName
         }`,
@@ -69,7 +67,11 @@ export function Trace(
                     }
                 }
             } finally {
-                messageConstructor(startTime, new Date(), label);
+                if (
+                    process.env.LOG_LEVEL === LOG_LEVELS_MAP[LOG_LEVELS.TRACE]
+                ) {
+                    messageConstructor(startTime, new Date(), label);
+                }
             }
 
             return value;

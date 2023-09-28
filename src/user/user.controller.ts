@@ -35,12 +35,12 @@ export class UserController extends BaseController implements IUserController {
         this.bindRoutes([
             {
                 path: '/index',
-                func: this.index,
+                handler: this.index,
                 method: 'get',
             },
             {
                 path: '/login',
-                func: this.login,
+                handler: this.login,
                 method: 'post',
                 middlewares: [
                     new ValidateMiddleware(this.loggerService, UserLoginDto),
@@ -48,7 +48,7 @@ export class UserController extends BaseController implements IUserController {
             },
             {
                 path: '/register',
-                func: this.registration,
+                handler: this.registration,
                 method: 'post',
                 middlewares: [
                     new ValidateMiddleware(this.loggerService, UserRegisterDto),
@@ -56,7 +56,7 @@ export class UserController extends BaseController implements IUserController {
             },
             {
                 path: '/refresh',
-                func: this.refresh,
+                handler: this.refresh,
                 method: 'post',
                 middlewares: [
                     new CookiesGuardMiddleware(
@@ -67,7 +67,7 @@ export class UserController extends BaseController implements IUserController {
             },
             {
                 path: '/info',
-                func: this.info,
+                handler: this.info,
                 method: 'get',
                 middlewares: [new AuthGuardMiddleware(this.loggerService)],
             },

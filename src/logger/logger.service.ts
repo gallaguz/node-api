@@ -42,13 +42,6 @@ export class LoggerService implements ILogger {
             format,
             transports,
         });
-
-        // this.critical('critical');
-        // this.error('error');
-        // this.warning('warning');
-        // this.info('info');
-        // this.debug('debug');
-        // this.trace('trace');
     }
 
     public critical(message: string | number): void {
@@ -94,96 +87,9 @@ export class LoggerService implements ILogger {
     }
 
     public morgan(message: string): void {
-        console.log(message);
         this._instance.log({
             level: LOG_LEVELS_MAP[LOG_LEVELS.ERROR],
             message: message.toString(),
         });
     }
 }
-// import { injectable } from 'inversify';
-// import { Logger } from 'tslog';
-//
-// import { ILogger } from '@app/logger/logger.interface';
-//
-// // const log: Logger<ILogObj> = new Logger();
-// //
-// // log.silly('I am a silly log.');
-//
-// export enum LOG_LEVELS {
-//     METRICS = 1,
-//     SILLY = 2,
-//     TRACE = 3,
-//     DEBUG = 4,
-//     INFO = 5,
-//     WARN = 6,
-//     ERROR = 7,
-//     FATAL = 8,
-// }
-//
-// export const LOG_LEVELS_NAMES = {
-//     [LOG_LEVELS.METRICS]: 'METRICS',
-//     [LOG_LEVELS.SILLY]: 'SILLY',
-//     [LOG_LEVELS.TRACE]: 'TRACE',
-//     [LOG_LEVELS.DEBUG]: 'DEBUG',
-//     [LOG_LEVELS.INFO]: 'INFO',
-//     [LOG_LEVELS.WARN]: 'WARN',
-//     [LOG_LEVELS.ERROR]: 'ERROR',
-//     [LOG_LEVELS.FATAL]: 'FATAL',
-// };
-//
-// @injectable()
-// export class LoggerService implements ILogger {
-//     public _instance: Logger;
-//
-//     constructor() {
-//         this._instance = new Logger({
-//             name: `API`,
-//             type: 'pretty',
-//             displayInstanceName: true,
-//             displayLoggerName: true,
-//             displayFilePath: 'hidden',
-//             displayFunctionName: false,
-//         });
-//     }
-//
-//     public log(...args: unknown[]): void {
-//         this._instance.info(...args);
-//     }
-//
-//     public metrics(...args: unknown[]): void {
-//         return this.log(
-//             LOG_LEVELS.METRICS,
-//             LOG_LEVELS_NAMES[LOG_LEVELS.METRICS],
-//             ...args,
-//         );
-//     }
-//
-//     public silly(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.SILLY, LOG_LEVELS_NAMES[LOG_LEVELS.SILLY], ...args);
-//     }
-//
-//     public trace(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.TRACE, LOG_LEVELS_NAMES[LOG_LEVELS.TRACE], ...args);
-//     }
-//
-//     public debug(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.DEBUG, LOG_LEVELS_NAMES[LOG_LEVELS.DEBUG], ...args);
-//     }
-//
-//     public info(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.INFO, LOG_LEVELS_NAMES[LOG_LEVELS.INFO], ...args);
-//     }
-//
-//     public warn(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.WARN, LOG_LEVELS_NAMES[LOG_LEVELS.WARN], ...args);
-//     }
-//
-//     public error(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.ERROR, LOG_LEVELS_NAMES[LOG_LEVELS.ERROR], ...args);
-//     }
-//
-//     public fatal(...args: unknown[]): void {
-//         this.log(LOG_LEVELS.FATAL, LOG_LEVELS_NAMES[LOG_LEVELS.FATAL], ...args);
-//     }
-// }

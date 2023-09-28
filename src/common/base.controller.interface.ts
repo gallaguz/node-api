@@ -7,7 +7,7 @@ type THttpMethods = 'get' | 'post' | 'delete' | 'patch' | 'put' | 'options';
 
 export interface IRouteInterface {
     path: string;
-    func: (req: Request, res: Response, next: NextFunction) => void;
+    handler(req: Request, res: Response, next: NextFunction): void;
     method: keyof Pick<Router, THttpMethods>;
     middlewares?: IMiddleware[];
 }

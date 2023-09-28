@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
 import { APP_KEYS } from '@app/app-keys';
-import { Trace } from '@app/decorators/trace';
 import { ILogger } from '@app/logger/logger.interface';
 
 @injectable()
@@ -15,7 +14,6 @@ export class PrismaService {
         this.client = new PrismaClient();
     }
 
-    @Trace()
     async connect(): Promise<void> {
         try {
             await this.client.$connect();

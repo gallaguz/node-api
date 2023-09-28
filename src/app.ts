@@ -26,12 +26,12 @@ export class App {
     port: number;
 
     constructor(
-        @inject(APP_KEYS.LoggerService) private loggerService: ILogger,
         @inject(APP_KEYS.UserController)
         private userController: IUserController,
+        @inject(APP_KEYS.LoggerService) private loggerService: ILogger,
+        @inject(APP_KEYS.ConfigService) private configService: IConfigService,
         @inject(APP_KEYS.ExceptionFilter)
         private exceptionFilter: IExceptionFilter,
-        @inject(APP_KEYS.ConfigService) private configService: IConfigService,
         @inject(APP_KEYS.PrismaService) private prismaService: PrismaService,
         @inject(APP_KEYS.TokenService) private tokenService: ITokenService,
     ) {

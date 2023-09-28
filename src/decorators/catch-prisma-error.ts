@@ -1,5 +1,3 @@
-import process from 'process';
-
 import {
     PrismaClientInitializationError,
     PrismaClientKnownRequestError,
@@ -9,25 +7,6 @@ import {
 } from '@prisma/client/runtime/library';
 
 import { BadRequestError } from '@app/errors/bad-request.error';
-import { loggerService } from '@app/main';
-
-type TLabel = {
-    constructorName: string;
-    methodName: string;
-    message?: string;
-};
-
-const labelConstructor = (
-    constructorName: string,
-    propertyKey: string,
-    message?: string,
-): TLabel => {
-    return {
-        constructorName,
-        methodName: propertyKey.toString(),
-        message,
-    };
-};
 
 export function CatchPrismaError(): (
     target: Object,
