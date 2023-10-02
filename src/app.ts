@@ -1,7 +1,6 @@
 import 'reflect-metadata';
-
 import { Server } from 'http';
-import * as process from 'process';
+import process from 'process';
 
 import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -76,18 +75,40 @@ export class App {
     }
 
     public async init(): Promise<void> {
-        this.useMiddleware();
-        this.useCookie();
-        this.useRoutes();
-        this.useExceptionFilters();
-        await this.prismaService.connect();
-        this.server = this.app.listen(this.port);
-        this.loggerService.info(
-            `[ ${this.constructor.name} ] Listening on port: ${this.port}`,
-        );
+        if (!this.isTerminated()) {
+            this.useMiddleware();
+            this.useCookie();
+            this.useRoutes();
+            this.useExceptionFilters();
+            await this.prismaService.connect();
+            this.server = this.app.listen(this.port);
+            this.loggerService.info(
+                `[ ${this.constructor.name} ] Listening on port: ${this.port}`,
+            );
+        } else {
+            process.exit(0);
+        }
     }
 
-    public close(): void {
+    public isTerminated(): boolean {
+        return parseInt(this.configService.get(ENV_VARS.IS_TERMINATED)) === 1;
+    }
+
+    public async close(): Promise<void> {
+        this.loggerService.warning(
+            'Shutting down the application gracefully...',
+        );
+        await this.sleep(30_000);
         this.server.close();
+        this.loggerService.warning('Server stopped. Application terminated.');
+        process.exit(0);
+    }
+
+    public sleep(milliseconds: number): Promise<void> {
+        return new Promise((resolve): void => {
+            setTimeout((): void => {
+                resolve();
+            }, milliseconds);
+        });
     }
 }

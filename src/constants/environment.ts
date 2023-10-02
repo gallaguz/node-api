@@ -4,9 +4,11 @@ export enum APP_ENV {
     STAGING = 'staging',
     PRODUCTION = 'production',
     TESTING = 'testing',
+    LOAD_TESTING = 'load_testing',
 }
 
 export enum ENV_VARS {
+    IS_TERMINATED = 'IS_TERMINATED',
     APP_ENV = 'APP_ENV',
     LOG_LEVEL = 'LOG_LEVEL',
     CPU_COUNT = 'CPU_COUNT',

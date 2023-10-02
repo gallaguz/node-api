@@ -19,20 +19,22 @@ export async function bootstrap(): Promise<void> {
     appContainer.load(TOKEN_CONTAINER);
     appContainer.load(PASSWORD_CONTAINER);
 
-    const app = appContainer.get<App>(APP_KEYS.Application);
-    const loggerService = appContainer.get<ILogger>(APP_KEYS.LoggerService);
+    const app: App = appContainer.get<App>(APP_KEYS.Application);
+    const loggerService: ILogger = appContainer.get<ILogger>(
+        APP_KEYS.LoggerService,
+    );
 
-    await app
-        .init()
-        .then(() => {
-            loggerService.info(`[ APP ] Initiation success`);
-        })
-        .catch((error: unknown): void => {
-            if (error instanceof Error) {
-                loggerService.error(error.message);
-            }
-        })
-        .finally(() => {
-            loggerService.debug(`[ PID ] ${process.pid}`);
+    try {
+        await app.init();
+
+        process.on('SIGTERM', () => {
+            app.close();
         });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            loggerService.error(error);
+        }
+    } finally {
+        loggerService.debug(`[ PID ] ${process.pid}`);
+    }
 }

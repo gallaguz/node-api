@@ -20,6 +20,7 @@ services:
             ]
         container_name: node_api_local
         restart: always
+        stop_grace_period: 60s
         env_file:
             - .environment/.local.env
         ports:

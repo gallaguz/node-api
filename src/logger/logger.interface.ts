@@ -1,9 +1,10 @@
 export interface ILogger {
-    critical(message: string | number): void;
-    error(message: string | number): void;
-    warning(message: string | number): void;
-    info(message: string | number): void;
-    debug(message: string | number): void;
-    trace(message: string | number): void;
-    morgan(message: string | number): void;
+    critical(message: string | number | object): void;
+    error(message: string | number | object): void;
+    warning(message: string | number | object): void;
+    info(message: string | number | object): void;
+    data(message: string | number | object): void;
+    debug(message: string | number | object): void;
+    trace(message: string | number | object): void;
+    morgan(message: string | number | object): void;
 }

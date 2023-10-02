@@ -6,7 +6,7 @@ import {
     PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 
-import { BadRequestError } from '@app/errors';
+import { BadRequestError } from '../errors';
 
 export function CatchPrismaError(): (
     target: Object,
