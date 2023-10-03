@@ -17,17 +17,20 @@ jobs:
         environment: testing
         runs-on: self-hosted
         #        needs: [lint]
+        env:
+            POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+            POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
+            POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+            DATABASE_URL: ${{ vars.DATABASE_URL }}
         steps:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Tests
-              env:
-                  POSTGRES_USER: ${{ vars.POSTGRES_USER }}
-                  POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
-                  POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-                  DATABASE_URL: ${{ vars.DATABASE_URL }}
-              run: |
-                  docker-compose -f docker-compose-testing.yaml build
-                  docker-compose -f docker-compose-testing.yaml up -d --remove-orphans
-                  docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate dev
+            - name: Build
+              run: docker-compose -f docker-compose-testing.yaml build
+
+            - name: Up -d
+              run: docker-compose -f docker-compose-testing.yaml up -d --remove-orphans
+
+            - name: Migrate
+              run: docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate dev
