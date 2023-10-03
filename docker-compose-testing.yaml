@@ -9,6 +9,8 @@ services:
         restart: always
         #        env_file:
         #            - .environment/.testing.env
+        environment:
+            DATABASE_URL: ${DATABASE_URL}
         depends_on:
             - node_api_postgres_testing
         volumes:
