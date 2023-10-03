@@ -10,6 +10,8 @@ services:
         #        env_file:
         #            - .environment/.testing.env
         environment:
+            IS_TERMINATED: ${IS_TERMINATED}
+            CPU_COUNT: ${CPU_COUNT}
             APP_ENV: ${APP_ENV}
             NODE_ENV: ${NODE_ENV}
             API_PORT: ${API_PORT}
