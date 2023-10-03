@@ -18,4 +18,4 @@ jobs:
             - name: Echo
               run: |
                   echo ${{ secrets.POSTGRES_DB }}
-                  echo ${{ variables.API_PORT }}
+                  echo ${{ env.API_PORT }}
