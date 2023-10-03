@@ -19,7 +19,7 @@ jobs:
             - name: Install deps
               run: npm ci
             - name: Test
-              run: jest
+              run: npx jest
     test-e2e:
         environment: testing
         runs-on: self-hosted
