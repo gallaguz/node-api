@@ -18,6 +18,17 @@ jobs:
         runs-on: self-hosted
         #        needs: [lint]
         env:
+            APP_ENV: ${{ vars.APP_ENV }}
+            NODE_ENV: ${{ vars.NODE_ENV }}
+            API_PORT: ${{ vars.API_PORT }}
+            SALT: ${{ vars.SALT }}
+            JWT_ACCESS_SECRET: ${{ vars.JWT_ACCESS_SECRET }}
+            JWT_ACCESS_EXPIRES_IN: ${{ vars.JWT_ACCESS_EXPIRES_IN }}
+            JWT_REFRESH_SECRET: ${{ vars.JWT_REFRESH_SECRET }}
+            JWT_REFRESH_EXPIRES_IN: ${{ vars.JWT_REFRESH_EXPIRES_IN }}
+            JWT_ALGORITHM: ${{ vars.JWT_ALGORITHM }}
+            COOKIES_JWT_REFRESH_TOKEN_EXP: ${{ vars.COOKIES_JWT_REFRESH_TOKEN_EXP }}
+            LOG_LEVEL: ${{ vars.LOG_LEVEL }}
             POSTGRES_USER: ${{ vars.POSTGRES_USER }}
             POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
             POSTGRES_DB: ${{ vars.POSTGRES_DB }}
@@ -34,3 +45,6 @@ jobs:
 
             - name: Migrate
               run: docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate dev
+
+            - name: Test e2e
+              run: docker-compose -f docker-compose-testing.yaml run node_api_testing npx jest --config jest.e2e.config.ts
