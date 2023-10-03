@@ -12,10 +12,17 @@ jobs:
 
             - name: Lint
               run: npm run lint
-    secret:
+
+    test-e2e:
         runs-on: self-hosted
+        #        needs: [lint]
         steps:
-            - name: Echo
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Tests
+              env:
+                  DATABASE_URL: ${{ vars.DATABASE_URL }}
+              #                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
               run: |
-                  echo ${{ secrets.POSTGRES_DB }}
-                  echo ${{ vars.API_PORT }}
+                  docker-compose -f docker-compose-testing.yaml build
