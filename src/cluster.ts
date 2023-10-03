@@ -29,7 +29,7 @@ if (cluster.isPrimary && cpuCount > 1) {
 }
 
 process.on('SIGTERM', () => {
-    process.env.IS_TERMINATED = String(1);
+    // process.env.IS_TERMINATED = String(1);
 
     for (const id in cluster.workers) {
         if (cluster.workers[id]) {

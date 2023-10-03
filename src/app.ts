@@ -95,6 +95,7 @@ export class App {
     }
 
     public async close(): Promise<void> {
+        process.env.IS_TERMINATED = String(1);
         this.loggerService.warning(
             'Shutting down the application gracefully...',
         );

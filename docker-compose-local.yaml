@@ -16,7 +16,7 @@ services:
                 'ts-node/register',
                 '-r',
                 'tsconfig-paths/register',
-                'src/cluster.ts',
+                'src/server.ts',
             ]
         container_name: node_api_local
         restart: always
@@ -69,6 +69,37 @@ services:
         networks:
             - node_api_local_network
 
+    node_api_mongo:
+        image: mongo:4.0.5
+        container_name: node_api_mongo
+        restart: always
+        logging:
+            driver: none
+        ports:
+            - '27019:27017'
+        volumes:
+            - node_api_mongo_volume:/data/db
+        networks:
+            - node_api_local_network
+
+    node_api_mongo_express:
+        image: mongo-express:0.54.0
+        container_name: node_api_mongo_express
+        restart: always
+        logging:
+            driver: none
+        depends_on:
+            - node_api_mongo
+        environment:
+            ME_CONFIG_MONGODB_SERVER: node_api_mongo
+            ME_CONFIG_MONGODB_PORT: 27017
+        ports:
+            - '8081:8081'
+        volumes:
+            - node_api_mongo_volume:/data/db
+        networks:
+            - node_api_local_network
+
 networks:
     node_api_local_network:
 
@@ -76,3 +107,4 @@ volumes:
     pgdata_local:
     rabbitmq_data_local:
     rabbitmq_log_local:
+    node_api_mongo_volume:

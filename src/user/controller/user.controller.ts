@@ -38,8 +38,8 @@ export class UserController extends BaseController implements IUserController {
 
         this.bindRoutes([
             {
-                path: '/index',
-                handler: this.index,
+                path: '/healthCheck',
+                handler: this.healthCheck,
                 method: 'get',
             },
             {
@@ -79,7 +79,7 @@ export class UserController extends BaseController implements IUserController {
     }
 
     @Trace()
-    async index(
+    async healthCheck(
         req: Request<{}, {}, UserRegisterDto>,
         res: Response,
         next: NextFunction,

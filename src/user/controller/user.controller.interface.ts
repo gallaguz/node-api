@@ -4,7 +4,7 @@ import { IBaseController } from '@app/common';
 import { UserRegisterDto } from '@app/user';
 
 export interface IUserController extends IBaseController {
-    index(
+    healthCheck(
         req: Request<{}, {}, UserRegisterDto>,
         res: Response,
         next: NextFunction,
