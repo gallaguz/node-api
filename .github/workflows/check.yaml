@@ -10,10 +10,20 @@ jobs:
               run: npm ci
             - name: Lint
               run: npm run lint
+    test:
+        runs-on: self-hosted
+        needs: [lint]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Install deps
+              run: npm ci
+            - name: Test
+              run: jest
     test-e2e:
         environment: testing
         runs-on: self-hosted
-        needs: [lint]
+        needs: [lint, test]
         env:
             IS_TERMINATED: ${{ vars.IS_TERMINATED }}
             CPU_COUNT: ${{ vars.CPU_COUNT }}
@@ -40,7 +50,7 @@ jobs:
             - name: Up -d
               run: docker-compose -f docker-compose-testing.yaml up -d --remove-orphans
             - name: Migrate
-              run: docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate dev
+              run: docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate reset --force
             - name: Test e2e
               run: docker-compose -f docker-compose-testing.yaml run node_api_testing npx jest --config jest.e2e.config.ts
             - name: Down

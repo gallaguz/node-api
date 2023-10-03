@@ -6,7 +6,7 @@ const config: Config.InitialOptions = {
     preset: 'ts-jest',
     testRegex: '.e2e-spec.ts$',
     moduleNameMapper: {
-        '^@app/(.*)$': '<rootDir>/src/$1', // Adjust the path accordingly
+        '^@app/(.*)$': '<rootDir>/src/$1',
     },
 };
 
