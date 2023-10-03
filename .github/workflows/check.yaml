@@ -28,6 +28,6 @@ jobs:
                   DATABASE_URL: ${{ vars.DATABASE_URL }}
                   #                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
               run: |
-                  docker-compose -f docker-compose-testing.yaml build
+#                  docker-compose -f docker-compose-testing.yaml build
                   docker-compose -f docker-compose-testing.yaml up -d --remove-orphans
-                  docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate dev
+#                  docker-compose -f docker-compose-testing.yaml run -T node_api_testing npx prisma migrate dev
