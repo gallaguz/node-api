@@ -7,8 +7,8 @@ services:
             dockerfile: docker/Dockerfile.testing
         container_name: node_api_testing
         restart: always
-        env_file:
-            - .environment/.testing.env
+        #        env_file:
+        #            - .environment/.testing.env
         depends_on:
             - node_api_postgres_testing
         volumes:
