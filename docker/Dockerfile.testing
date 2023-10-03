@@ -1,40 +1,5 @@
 FROM node:18.12.1 as build
 
-##################################################
-# Terminate signal
-ENV IS_TERMINATED=0
-# APP env
-ENV APP_ENV=testing
-# cpu
-ENV CPU_COUNT=1
-# listen
-ENV API_PORT=8000
-# db
-ENV DATABASE_URL=postgresql://testing:testing@node_api_postgres_testing:5432/testing
-# password
-ENV SALT=10
-# JWT
-ENV JWT_ACCESS_SECRET=jwt-access-secret-key
-ENV JWT_ACCESS_EXPIRES_IN=15m
-ENV JWT_REFRESH_SECRET=jwt-refresh-secret-key
-ENV JWT_REFRESH_EXPIRES_IN=30d
-ENV JWT_ALGORITHM=HS256
-# cookies
-ENV COOKIES_JWT_REFRESH_TOKEN_EXP=2592000000
-ENV LOG_LEVEL=CRITICAL
-ENV LOAD_TEST_URL=node_api_testing:8000
-##################################################
-# Env
-ENV NODE_ENV=testing
-# PostgreSQL credentials
-ENV POSTGRES_USER=testing
-ENV POSTGRES_PASSWORD=testing
-ENV POSTGRES_DB=testing
-# RebbitMQ credentials
-ENV RABBITMQ_DEFAULT_PASS=testing
-ENV RABBITMQ_DEFAULT_USER=testing
-
-
 RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app

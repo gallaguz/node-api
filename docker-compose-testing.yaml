@@ -7,29 +7,8 @@ services:
             dockerfile: docker/Dockerfile.testing
         container_name: node_api_testing
         restart: always
-        #        env_file:
-        #            - .environment/.testing.env
-        environment:
-            IS_TERMINATED: ${IS_TERMINATED}
-            APP_ENV: ${APP_ENV}
-            CPU_COUNT: ${CPU_COUNT}
-            API_PORT: ${API_PORT}}
-            DATABASE_URL: ${DATABASE_URL}
-            SALT: ${SALT}
-            JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
-            JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN}
-            JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-            JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN}
-            JWT_ALGORITHM: ${JWT_ALGORITHM}
-            COOKIES_JWT_REFRESH_TOKEN_EXP: ${COOKIES_JWT_REFRESH_TOKEN_EXP}
-            LOG_LEVEL: ${LOG_LEVEL}
-            LOAD_TEST_URL: ${LOAD_TEST_URL}
-            NODE_ENV: ${NODE_ENV}
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
-            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-            RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+        env_file:
+            - .environment/.testing.env
         depends_on:
             - node_api_postgres_testing
         volumes:
