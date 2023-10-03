@@ -12,3 +12,10 @@ jobs:
 
             - name: Lint
               run: npm run lint
+    secret:
+        runs-on: self-hosted
+        steps:
+            - name: Echo
+              run: |
+                  echo ${{ secrets.POSTGRES_DB }}
+                  echo ${{ variables.API_PORT }}
