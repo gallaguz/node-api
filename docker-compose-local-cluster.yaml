@@ -1,0 +1,110 @@
+version: '3.1'
+
+services:
+    node_api_local:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.local
+        command:
+            [
+                'nodemon',
+                '-e',
+                'ts,json',
+                '--exec',
+                'node',
+                '-r',
+                'ts-node/register',
+                '-r',
+                'tsconfig-paths/register',
+                'src/cluster.ts',
+            ]
+        container_name: node_api_local
+        restart: always
+        stop_grace_period: 60s
+        env_file:
+            - .environment/.local.env
+        ports:
+            - '8000:8000'
+        depends_on:
+            - node_api_postgres_local
+        volumes:
+            - ./:/usr/src/app
+        networks:
+            - node_api_local_network
+
+    node_api_postgres_local:
+        image: postgres:13.3-alpine
+        container_name: node_api_postgres_local
+        restart: always
+        logging:
+            driver: none
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        ports:
+            - '5432:5432'
+        expose:
+            - 5432
+        volumes:
+            - pgdata_local:/var/lib/postgresql/data
+        networks:
+            - node_api_local_network
+
+    node_api_rmq_local:
+        image: rabbitmq:3-management
+        container_name: node_api_rmq_local
+        restart: always
+        logging:
+            driver: none
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+        ports:
+            - '15672:15672'
+            - '5672:5672'
+        volumes:
+            - rabbitmq_data_local:/var/lib/rabbitmq
+            - rabbitmq_log_local:/var/log/rabbitmq
+        networks:
+            - node_api_local_network
+
+    node_api_mongo:
+        image: mongo:4.0.5
+        container_name: node_api_mongo
+        restart: always
+        logging:
+            driver: none
+        ports:
+            - '27019:27017'
+        volumes:
+            - node_api_mongo_volume:/data/db
+        networks:
+            - node_api_local_network
+
+    node_api_mongo_express:
+        image: mongo-express:0.54.0
+        container_name: node_api_mongo_express
+        restart: always
+        logging:
+            driver: none
+        depends_on:
+            - node_api_mongo
+        environment:
+            ME_CONFIG_MONGODB_SERVER: node_api_mongo
+            ME_CONFIG_MONGODB_PORT: 27017
+        ports:
+            - '8081:8081'
+        volumes:
+            - node_api_mongo_volume:/data/db
+        networks:
+            - node_api_local_network
+
+networks:
+    node_api_local_network:
+
+volumes:
+    pgdata_local:
+    rabbitmq_data_local:
+    rabbitmq_log_local:
+    node_api_mongo_volume:
