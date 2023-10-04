@@ -1,7 +1,5 @@
 FROM node:18.12.1 as build
 
-#RUN apt-get update && apt-get install -y tini
-
 RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
