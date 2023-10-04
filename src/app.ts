@@ -96,13 +96,31 @@ export class App {
 
     public async close(): Promise<void> {
         process.env.IS_TERMINATED = String(1);
+        const environment = this.configService.get(ENV_VARS.APP_ENV);
+
         this.loggerService.warning(
             'Shutting down the application gracefully...',
         );
-        await this.sleep(30_000);
-        this.server.close();
-        this.loggerService.warning('Server stopped. Application terminated.');
-        process.exit(0);
+
+        try {
+            if (environment !== APP_ENV.TESTING) {
+                await this.sleep(30_000);
+            }
+
+            this.server.close();
+
+            this.loggerService.warning(
+                'Server stopped. Application terminated.',
+            );
+
+            if (environment !== APP_ENV.TESTING) {
+                process.exit(0);
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                this.loggerService.error(error);
+            }
+        }
     }
 
     public sleep(milliseconds: number): Promise<void> {

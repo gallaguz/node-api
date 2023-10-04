@@ -88,44 +88,56 @@ beforeAll(() => {
 
 let createdUser: User | null;
 
-describe('User Service', () => {
-    it('createUser success', async (): Promise<void> => {
-        ConfigServiceMock.get = jest
-            .fn()
-            .mockReturnValueOnce((key: string) => '10');
+describe('#UserService', () => {
+    describe('.registration', () => {
+        const mockUser = {
+            id: 'someId',
+            name: 'someName',
+            email: 'some@mail.com',
+            password: 'somePassword',
+        };
 
-        PasswordServiceMock.hash = jest
-            .fn()
-            .mockImplementationOnce(
-                async (password: string): Promise<string> => 'somePasswordHash',
+        beforeAll(() => {
+            ConfigServiceMock.get = jest
+                .fn()
+                .mockReturnValueOnce((key: string) => '10');
+
+            PasswordServiceMock.hash = jest
+                .fn()
+                .mockImplementationOnce(
+                    async (password: string): Promise<string> =>
+                        'somePasswordHash',
+                );
+
+            UsersRepositoryMock.getUserByEmail = jest
+                .fn()
+                .mockImplementationOnce(
+                    async (email: string): Promise<User | null> => null,
+                );
+
+            usersRepository.create = jest.fn().mockImplementationOnce(
+                async (user: IUserEntity): Promise<User> => ({
+                    id: mockUser.id,
+                    name: user.name,
+                    email: user.email,
+                    password: user.password,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                }),
             );
-
-        UsersRepositoryMock.getUserByEmail = jest
-            .fn()
-            .mockImplementationOnce(
-                async (email: string): Promise<User | null> => null,
-            );
-
-        usersRepository.create = jest.fn().mockImplementationOnce(
-            async (user: IUserEntity): Promise<User> => ({
-                id: 'some id',
-                name: user.name,
-                email: user.email,
-                password: user.password,
-                created_at: new Date(),
-                updated_at: new Date(),
-            }),
-        );
-
-        createdUser = await usersService.registration({
-            email: 'example@example.com',
-            name: 'example',
-            password: 'example',
         });
 
-        expect(createdUser?.id).toEqual('some id');
-        expect(createdUser?.email).toEqual('example@example.com');
-        expect(createdUser?.password).not.toEqual('example');
+        it('should register a new user', async (): Promise<void> => {
+            createdUser = await usersService.registration({
+                name: mockUser.name,
+                email: mockUser.email,
+                password: mockUser.password,
+            });
+
+            expect(createdUser?.id).toEqual(mockUser.id);
+            expect(createdUser?.email).toEqual(mockUser.email);
+            expect(createdUser?.password).not.toEqual(mockUser.password);
+        });
     });
 
     // it('ValidateUser - success', async () => {
